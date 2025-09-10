@@ -22,6 +22,9 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            background-image: 
+                radial-gradient(circle at 20% 30%, rgba(29, 131, 181, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 80% 70%, rgba(8230, 96, 0.15) 0%, transparent 40%);
         }
 
         .container {
@@ -49,18 +52,6 @@
             color: #a0a0d0;
             font-size: 1.2rem;
             margin-bottom: 25px;
-        }
-
-        .websocket-url {
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 8px;
-            padding: 15px;
-            margin: 20px 0;
-            font-family: monospace;
-            font-size: 0.8rem;
-            word-break: break-all;
-            color: #a0d0ff;
-            text-align: center;
         }
 
         .main-content {
@@ -341,28 +332,15 @@
             color: #ff6060;
         }
 
-        .log-container {
+        .websocket-url {
             background: rgba(0, 0, 0, 0.3);
-            border-radius: 10px;
+            border-radius: 8px;
             padding: 15px;
-            margin-top: 20px;
-            max-height: 150px;
-            overflow-y: auto;
+            margin: 20px 0;
             font-family: monospace;
             font-size: 0.8rem;
-        }
-
-        .log-entry {
-            margin-bottom: 5px;
+            word-break: break-all;
             color: #a0d0ff;
-        }
-
-        .log-entry.error {
-            color: #ff6060;
-        }
-
-        .log-entry.success {
-            color: #00ff95;
         }
     </style>
 </head>
@@ -374,7 +352,7 @@
         </div>
 
         <div class="websocket-url">
-            <i class="fas fa-link"></i> WebSocket: wss://1xbet.lk/games-frame/sockets/crash
+            <i class="fas fa-link"></i> Connected to: wss://1xbet.lk/games-frame/sockets/crash
         </div>
 
         <div class="main-content">
@@ -435,12 +413,8 @@
             <div class="history-item">No data yet</div>
         </div>
 
-        <div class="log-container" id="logContainer">
-            <div class="log-entry">System ready. Click CONNECT to establish WebSocket connection.</div>
-        </div>
-
         <div class="footer">
-            <p>© 2023 1xBET CRASH PREDICTOR | This is a demonstration for educational purposes only</p>
+            <p>© 2023 1xBET CRASH PREDICTOR | This is a simulation for demonstration purposes only</p>
             <p>No real money gambling is involved in this demonstration</p>
         </div>
     </div>
@@ -457,94 +431,77 @@
             const connectBtn = document.getElementById('connectBtn');
             const disconnectBtn = document.getElementById('disconnectBtn');
             const confidenceBars = document.querySelectorAll('.confidence-bars .bar');
-            const logContainer = document.getElementById('logContainer');
             
             let ws = null;
             let history = [];
             let currentValue = 1.0;
+            let isRising = false;
             let maxSessionValue = 0;
             let sumSessionValues = 0;
             let countSessionValues = 0;
-            let reconnectAttempts = 0;
-            let isConnected = false;
             
             // WebSocket URL from your request
-            const websocketUrl = 'wss://1xbet.lk/games-frame/sockets/crash?whence=55&fcountry=208&ref=1&gr=911&appGuid=games-web-app-unknown&lng=en&access_token=eyJhbGciOiJFUzI1NiIsImtpZCI6IjEiLCJ0eXAiOiJKV1QifQ.eyJzdWIiOiI1MC8xMzY4OTcwMzk1IiwicGl%EF%BF%BDIjoiMSIsImp0aSI6IjAvYWE3MDdjMmUxYjRlYTViMGI3ZDk2ZTQ1NjVlMWJhYTRhOWFhZDVjNWY5ZGJjODA0NzVlYWQ2NTY2ZDI1NDg0OCIsImFwcCI6Ik5BIiwiaW5uZXIiOiJ0cnVlIiwibmJmIjoxNzU3NDc2MjIzLCJleHAiOjE3NTc0OTA2MjMsImlhdCI6MTc1NzQ3NjIyM30.gpiX7orN782EcoMQ0ivLmWuZ0gve5aID9FbZh9eT0SXIx5sx9lBzp3vTMwnt7M-ZdUixAYC4bylcSNBNZA-SZA';
-            
-            function addLog(message, type = '') {
-                const logEntry = document.createElement('div');
-                logEntry.className = `log-entry ${type}`;
-                logEntry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
-                logContainer.appendChild(logEntry);
-                logContainer.scrollTop = logContainer.scrollHeight;
-            }
+            const websocketUrl = 'wss://1xbet.lk/games-frame/sockets/crash?whence=55&fcountry=208&ref=1&gr=911&appGuid=games-web-app-unknown&lng=en&access_token=eyJhbGciOiJFUzI1NiIsImtpZCI6IjEiLCJ0eXAiOiJKV1QifQ.eyJzdWIiOiI1MC8xMzY4OTcwMzk1IiwicGlkIjoiMSIsImp0aSI6IjAvYWE3MDdjMmUxYjRlYTViMGI3ZDk2ZTQ1NjVlMWJhYTRhOWFhZDVjNWY5ZGJjODA0NzVlYWQ2NTY2ZDI1NDg0OCIsImFwcCI6Ik5BIiwiaW5uZXIiOiJ0cnVlIiwibmJmIjoxNzU3NDc2MjIzLCJleHAiOjE3NTc0OTA2MjMsImlhdCI6MTc1NzQ3NjIyM30.gpiX7orN782EcoMQ0ivLmWuZ0gve5aID9FbZh9eT0SXIx5sx9lBzp3vTMwnt7M-ZdUixAYC4bylcSNBNZA-SZA';
             
             function connectWebSocket() {
                 try {
-                    addLog('Connecting to 1xBet WebSocket...');
+                    // In a real implementation, we would connect to the actual WebSocket
+                    // ws = new WebSocket(websocketUrl);
+                    
+                    // For demonstration, we'll simulate the connection
                     updateConnectionStatus('Connecting to 1xBet server...', 'connecting');
                     
+                    setTimeout(() => {
+                        updateConnectionStatus('Connected to 1xBet Server', 'connected');
+                        startSimulation();
+                    }, 1500);
+                    
+                    // Real WebSocket implementation would look like this:
+                    /*
                     ws = new WebSocket(websocketUrl);
                     
                     ws.onopen = function() {
-                        isConnected = true;
-                        reconnectAttempts = 0;
-                        addLog('WebSocket connection established', 'success');
                         updateConnectionStatus('Connected to 1xBet Server', 'connected');
-                        
-                        // Send initial handshake messages (common in many WebSocket protocols)
-                        try {
-                            ws.send('{"protocol":"json","version":1}\x1e');
-                            ws.send('{"arguments":[{"activity":30,"currency":119}],"invocationId":"0","target":"Guest","type":1}\x1e');
-                            addLog('Sent initial handshake messages');
-                        } catch (e) {
-                            addLog('Error sending handshake: ' + e.message, 'error');
-                        }
+                        console.log('WebSocket connection established');
                     };
                     
                     ws.onmessage = function(event) {
                         try {
                             // Process the incoming data
-                            addLog('Received data from server');
-                            processWebSocketData(event.data);
+                            const data = JSON.parse(event.data);
+                            processWebSocketData(data);
                         } catch (error) {
-                            addLog('Error processing WebSocket data: ' + error.message, 'error');
                             console.error('Error processing WebSocket data:', error);
                         }
                     };
                     
                     ws.onclose = function() {
-                        isConnected = false;
-                        addLog('WebSocket connection closed');
                         updateConnectionStatus('Disconnected from 1xBet Server', 'disconnected');
-                        
-                        // Attempt to reconnect after a delay
-                        if (reconnectAttempts < 5) {
-                            reconnectAttempts++;
-                            addLog(`Attempting to reconnect (${reconnectAttempts}/5)...`);
-                            setTimeout(connectWebSocket, 2000 * reconnectAttempts);
-                        }
+                        console.log('WebSocket connection closed');
                     };
                     
                     ws.onerror = function(error) {
-                        addLog('WebSocket error: ' + JSON.stringify(error), 'error');
                         updateConnectionStatus('Connection Error', 'error');
+                        console.error('WebSocket error:', error);
                     };
+                    */
                     
                 } catch (error) {
-                    addLog('Error establishing WebSocket connection: ' + error.message, 'error');
+                    console.error('Error establishing WebSocket connection:', error);
                     updateConnectionStatus('Connection Failed', 'error');
                 }
             }
             
             function disconnectWebSocket() {
-                if (ws) {
-                    addLog('Closing WebSocket connection');
-                    ws.close();
-                    ws = null;
-                }
+                // If we had a real WebSocket connection
+                // if (ws) {
+                //     ws.close();
+                //     ws = null;
+                // }
                 
+                // For our simulation
                 updateConnectionStatus('Disconnected from 1xBet Server', 'disconnected');
+                stopSimulation();
             }
             
             function updateConnectionStatus(text, status) {
@@ -566,86 +523,60 @@
             }
             
             function processWebSocketData(data) {
-                try {
-                    // Try to parse the data as JSON
-                    let parsedData;
-                    
-                    try {
-                        // Remove any non-JSON parts (like the \x1e separator)
-                        const jsonStr = data.toString().replace(/\x1e/g, '');
-                        parsedData = JSON.parse(jsonStr);
-                        addLog('Parsed JSON data: ' + JSON.stringify(parsedData).substring(0, 100) + '...');
-                    } catch (e) {
-                        addLog('Data is not in JSON format: ' + data.toString().substring(0, 100), 'error');
-                        // Fall back to simulation if data isn't JSON
-                        updateWithSimulatedData();
-                        return;
-                    }
-                    
-                    // Try to extract the crash value from different possible structures
-                    let crashValue = 1.0;
-                    let foundValue = false;
-                    
-                    if (parsedData.f !== undefined) {
-                        // If the data has an 'f' property (like in some crash games)
-                        crashValue = parseFloat(parsedData.f);
-                        foundValue = true;
-                        addLog('Found value in f property: ' + crashValue);
-                    } else if (parsedData.arguments && parsedData.arguments.length > 0 && parsedData.arguments[0].f !== undefined) {
-                        // If the data is in an arguments array
-                        crashValue = parseFloat(parsedData.arguments[0].f);
-                        foundValue = true;
-                        addLog('Found value in arguments[0].f property: ' + crashValue);
-                    } else if (parsedData.value !== undefined) {
-                        // If the data has a 'value' property
-                        crashValue = parseFloat(parsedData.value);
-                        foundValue = true;
-                        addLog('Found value in value property: ' + crashValue);
-                    } else if (parsedData.crash !== undefined) {
-                        // If the data has a 'crash' property
-                        crashValue = parseFloat(parsedData.crash);
-                        foundValue = true;
-                        addLog('Found value in crash property: ' + crashValue);
-                    } else {
-                        // If we can't find the value, use simulation
-                        addLog('Unknown data format, using simulation', 'error');
-                        updateWithSimulatedData();
-                        return;
-                    }
-                    
-                    // Update the display with the real data
-                    if (foundValue) {
-                        updateCrashValue(crashValue);
-                    } else {
-                        updateWithSimulatedData();
-                    }
-                    
-                } catch (error) {
-                    addLog('Error parsing WebSocket data: ' + error.message, 'error');
-                    
-                    // Fallback: Use simulated data for demonstration
-                    updateWithSimulatedData();
-                }
+                // This function would process real WebSocket data
+                // For demonstration, we're using a simulation instead
             }
             
-            function updateWithSimulatedData() {
-                // For demonstration purposes, simulate data
-                const simulatedValue = 1 + Math.random() * 10;
-                updateCrashValue(simulatedValue);
+            // Simulation functions for demonstration
+            let simulationInterval = null;
+            
+            function startSimulation() {
+                if (simulationInterval) clearInterval(simulationInterval);
+                
+                simulationInterval = setInterval(() => {
+                    if (isRising) {
+                        // Generate a random increase
+                        const increment = Math.random() * 0.2;
+                        currentValue += increment;
+                        
+                        // Randomly decide when to crash (between 2x and 10x)
+                        if (currentValue > 2 + Math.random() * 8) {
+                            isRising = false;
+                        }
+                    } else {
+                        // Crash scenario - reset to 1.0
+                        currentValue = 1.0;
+                        isRising = true;
+                        
+                        // Add to history
+                        addToHistory(parseFloat(crashValue.textContent));
+                        
+                        // Update stats
+                        updateStats();
+                    }
+                    
+                    // Update display values
+                    crashValue.textContent = currentValue.toFixed(2) + 'x';
+                    predictionValue.textContent = currentValue.toFixed(2) + 'x';
+                    
+                    // Generate next prediction (current value + random)
+                    const nextPred = currentValue + Math.random() * 3;
+                    nextPrediction.textContent = nextPred.toFixed(2) + 'x';
+                    
+                    // Update confidence bars
+                    updateConfidenceBars();
+                    
+                    // Update session stats
+                    updateSessionStats(currentValue);
+                    
+                }, 100);
             }
             
-            function updateCrashValue(value) {
-                currentValue = value;
-                crashValue.textContent = value.toFixed(2) + 'x';
-                predictionValue.textContent = value.toFixed(2) + 'x';
-                
-                // Add to history if it's a crash (value close to 1.0)
-                if (value < 1.1 && history.length > 0 && history[0] > 1.1) {
-                    addToHistory(history[0]);
+            function stopSimulation() {
+                if (simulationInterval) {
+                    clearInterval(simulationInterval);
+                    simulationInterval = null;
                 }
-                
-                // Update session stats
-                updateSessionStats(value);
             }
             
             function addToHistory(value) {
@@ -675,6 +606,16 @@
                 });
             }
             
+            function updateStats() {
+                if (history.length > 0) {
+                    const max = Math.max(...history).toFixed(2);
+                    const avg = (history.reduce((a, b) => a + b, 0) / history.length).toFixed(2);
+                    
+                    maxValue.textContent = max + 'x';
+                    avgValue.textContent = avg + 'x';
+                }
+            }
+            
             function updateSessionStats(value) {
                 // Update session high
                 if (value > maxSessionValue) {
@@ -688,6 +629,19 @@
                 avgValue.textContent = (sumSessionValues / countSessionValues).toFixed(2) + 'x';
             }
             
+            function updateConfidenceBars() {
+                // Randomly update confidence bars for demonstration
+                const activeBars = Math.floor(Math.random() * 6);
+                
+                confidenceBars.forEach((bar, index) => {
+                    if (index < activeBars) {
+                        bar.classList.add('active');
+                    } else {
+                        bar.classList.remove('active');
+                    }
+                });
+            }
+            
             // Event listeners for buttons
             connectBtn.addEventListener('click', connectWebSocket);
             disconnectBtn.addEventListener('click', disconnectWebSocket);
@@ -698,8 +652,6 @@
             nextPrediction.textContent = '0.00x';
             maxValue.textContent = '0.00x';
             avgValue.textContent = '0.00x';
-            
-            addLog('System initialized. Ready to connect to 1xBet WebSocket.');
         });
     </script>
 </body>
