@@ -1,237 +1,428 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BYTEX 888STRZ CRASH PREDICTOR</title>
+    <title>Live Stream - SL vs BAN | Asia Cup 2025</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            text-align: center;
-            color: #ffffff;
-            background: url('https://dl.dropboxusercontent.com/scl/fi/opptdtk92bl4jvw6t31yq/IMG-20250218-WA0007.jpg?rlkey=4br287q5onf9v4myjb7usbk1d&st=rhx8f9zt') no-repeat center center fixed;
-            background-size: cover;
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            color: #fff;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
             display: flex;
-            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 30px;
+        }
+        
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+            color: #4db8ff;
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo i {
+            margin-right: 10px;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 25px;
+        }
+        
+        nav ul li a {
+            color: #ddd;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        nav ul li a:hover {
+            color: #4db8ff;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+        }
+        
+        .video-container {
+            background: #000;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .video-placeholder {
+            width: 100%;
+            height: 400px;
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
+                        url('https://d386x15omkrv8v.cloudfront.net/posters/ASIA_CUP_2025_SLVSBAN_poster.jpg');
+            background-size: cover;
+            background-position: center;
+            display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
             position: relative;
         }
-
-        /* 🔥 Title Box (centered) */
-        .title-box {
-            background: rgba(0, 0, 0, 0.8);
-            padding: 15px 30px;
-            border-radius: 15px;
-            border: 3px solid #ffcc00;
-            font-size: 1.5em;
-            font-weight: bold;
-            text-transform: uppercase;
-            color: #ffcc00;
-            box-shadow: 0px 0px 15px rgba(255, 204, 0, 0.8);
-            position: absolute;
-            top: 20px;
-        }
-
-        /* 🔥 Special Notice Box */
-        .special-notice-box {
-            background: rgba(0, 0, 0, 0.8);
-            padding: 20px 30px;
-            border-radius: 15px;
-            border: 3px solid #ffcc00;
-            font-size: 1.2em;
-            color: #ffffff;
-            position: absolute;
-            top: 100px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80%;
-            z-index: 3;
-            box-shadow: 0px 0px 15px rgba(255, 204, 0, 0.8);
+        
+        .play-button {
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
             display: flex;
-            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .play-button:hover {
+            transform: scale(1.1);
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .play-button i {
+            color: #fff;
+            font-size: 40px;
+            margin-left: 5px;
+        }
+        
+        .video-controls {
+            padding: 15px;
+            background: #111;
+            display: flex;
+            justify-content: space-between;
             align-items: center;
         }
-
-        .special-notice-box p {
-            margin: 0;
-            text-align: center;
+        
+        .control-left, .control-right {
+            display: flex;
+            align-items: center;
         }
-
-        /* Close Button */
-        .close-btn {
-            background-color: red;
-            color: white;
+        
+        .control-btn {
+            background: none;
             border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
+            color: #ddd;
+            font-size: 18px;
+            margin-right: 15px;
             cursor: pointer;
-            font-size: 1em;
-            margin-top: 15px;
+            transition: color 0.3s;
         }
-
-        /* 🔥 Date-Time Box (below the Title Box) */
-        .date-time-box {
-            background: rgba(0, 0, 0, 0.8);
-            padding: 10px 20px;
-            border-radius: 15px;
-            border: 3px solid #ffcc00;
-            font-size: 1.1em;
-            font-weight: bold;
-            color: #ffffff;
-            position: absolute;
-            bottom: 50px;
-            z-index: 2;
-            box-shadow: 0px 0px 10px rgba(255, 204, 0, 0.8);
+        
+        .control-btn:hover {
+            color: #4db8ff;
         }
-
-        #crashValue {
-            font-size: 3.5em;
+        
+        .volume-control {
+            display: flex;
+            align-items: center;
+        }
+        
+        .volume-control input {
+            margin-left: 10px;
+        }
+        
+        .video-info {
             padding: 20px;
-            color: #00d1b2;
-            line-height: 80px;
-            transition: transform 0.3s ease-in-out;
-            display: inline-block;
-            position: relative;
-            z-index: 2;
         }
-
-        .circle {
-            width: 160px;
-            height: 160px;
+        
+        .match-title {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: #4db8ff;
+        }
+        
+        .match-details {
+            display: flex;
+            margin-bottom: 15px;
+        }
+        
+        .team {
+            display: flex;
+            align-items: center;
+            margin-right: 30px;
+        }
+        
+        .team-flag {
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 1;
-            background: black;
-            border: 5px solid transparent;
-            animation: rainbowBorder 3s linear infinite;
-            display: none;
-        }
-
-        /* Unlimited Color Changing Border */
-        @keyframes rainbowBorder {
-            0% { border-color: red; }
-            20% { border-color: orange; }
-            40% { border-color: yellow; }
-            60% { border-color: lime; }
-            80% { border-color: blue; }
-            100% { border-color: violet; }
-        }
-
-        .whatsapp-box {
-            background: rgba(0, 0, 0, 0.8);
-            padding: 15px 30px;
-            border-radius: 15px;
-            border: 3px solid #ffcc00;
-            font-size: 1.2em;
+            background: #333;
+            margin-right: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             font-weight: bold;
-            color: #ffffff;
-            position: absolute;
-            bottom: 100px;
-            z-index: 2;
-            box-shadow: 0px 0px 10px rgba(255, 204, 0, 0.8);
         }
-
-        .whatsapp-box a {
-            color: #ffcc00;
-            text-decoration: none;
+        
+        .vs {
+            margin: 0 15px;
+            font-weight: 500;
+            color: #aaa;
+        }
+        
+        .match-info {
+            margin-top: 20px;
+        }
+        
+        .info-item {
+            margin-bottom: 10px;
+            display: flex;
+        }
+        
+        .info-label {
+            min-width: 120px;
+            color: #aaa;
+        }
+        
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .card-title {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: #4db8ff;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .upcoming-list {
+            list-style: none;
+        }
+        
+        .upcoming-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .upcoming-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .chat-container {
+            height: 300px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .chat-messages {
+            flex-grow: 1;
+            overflow-y: auto;
+            margin-bottom: 15px;
+        }
+        
+        .chat-input {
+            display: flex;
+        }
+        
+        .chat-input input {
+            flex-grow: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 5px 0 0 5px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+        
+        .chat-input button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 0 5px 5px 0;
+            background: #4db8ff;
+            color: #fff;
+            cursor: pointer;
+        }
+        
+        footer {
+            margin-top: 50px;
+            text-align: center;
+            padding: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #aaa;
+            font-size: 14px;
+        }
+        
+        @media (max-width: 900px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            nav ul {
+                display: none;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="title-box">BYTEX 888STRZ CRASH PREDICTOR</div> <!-- ✅ Title BOX -->
-    <div class="circle" id="oddCircle"></div> <!-- ✅ Odd Number Circle -->
-    <div id="crashValue">0.00</div>
-
-    <!-- ✅ Special Notice Box -->
-    <div class="special-notice-box" id="specialNoticeBox">
-        <p><strong>BYTEX SPECIAL NOTICE JUST NOW:</strong></p>
-        <p>මෙම BYTEX CRASH SIGNAL යෙදුම මගින් ලබා දෙන CRASH SIGNAL 888STRZ CRASH සදහා වැඩ කරයි. විශේෂ නිවේදනයයි මෙහි පෙන්වන ODD ඔබගේ 888STRZ CRASH හි පිපුරු පසු පෙන්වනවානම් අනිවාර්යෙන් BYTEX ඊජිප්තු VPN මිලදී ගෙන CONNECTED කර බාවිතා කරන්න. SERVER මගින් ලැබෙන සිග්නල් SLOW වීම මෙයට හේතුවයි. ස්තුතියි BYTEX WHATSAPP OWNER: +94 76 732 4225</p>
-        <button class="close-btn" onclick="closeNotice()">CLOSE</button>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-play-circle"></i>
+                LivStream
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">Sports</a></li>
+                    <li><a href="#">Live Events</a></li>
+                    <li><a href="#">Schedule</a></li>
+                    <li><a href="#">Sign In</a></li>
+                </ul>
+            </nav>
+        </header>
+        
+        <div class="main-content">
+            <div class="main-player">
+                <div class="video-container">
+                    <div class="video-placeholder">
+                        <div class="play-button">
+                            <i class="fas fa-play"></i>
+                        </div>
+                    </div>
+                    <div class="video-controls">
+                        <div class="control-left">
+                            <button class="control-btn"><i class="fas fa-play"></i></button>
+                            <button class="control-btn"><i class="fas fa-pause"></i></button>
+                            <div class="volume-control">
+                                <button class="control-btn"><i class="fas fa-volume-up"></i></button>
+                                <input type="range" min="0" max="100" value="80">
+                            </div>
+                        </div>
+                        <div class="control-right">
+                            <button class="control-btn"><i class="fas fa-expand"></i></button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="video-info">
+                    <h2 class="match-title">Asia Cup 2025: Sri Lanka vs Bangladesh</h2>
+                    <div class="match-details">
+                        <div class="team">
+                            <div class="team-flag">SL</div>
+                            <div>Sri Lanka</div>
+                        </div>
+                        <div class="vs">VS</div>
+                        <div class="team">
+                            <div class="team-flag">BAN</div>
+                            <div>Bangladesh</div>
+                        </div>
+                    </div>
+                    
+                    <div class="match-info">
+                        <div class="info-item">
+                            <span class="info-label">Date & Time:</span>
+                            <span>September 14, 2025 - 14:30 IST</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Tournament:</span>
+                            <span>Asia Cup 2025</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Venue:</span>
+                            <span>R. Premadasa Stadium, Colombo</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Status:</span>
+                            <span>Live - 24th Over</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="sidebar">
+                <div class="card">
+                    <h3 class="card-title">Upcoming Matches</h3>
+                    <ul class="upcoming-list">
+                        <li>India vs Pakistan - Sep 16</li>
+                        <li>Afghanistan vs Nepal - Sep 17</li>
+                        <li>Bangladesh vs India - Sep 19</li>
+                        <li>Sri Lanka vs Pakistan - Sep 21</li>
+                    </ul>
+                </div>
+                
+                <div class="card">
+                    <h3 class="card-title">Live Chat</h3>
+                    <div class="chat-container">
+                        <div class="chat-messages">
+                            <div class="message">CricketFan23: Great match so far!</div>
+                            <div class="message">SL_Supporter: Come on Sri Lanka!</div>
+                            <div class="message">BAN_Cricket: We need wickets now</div>
+                            <div class="message">GameOn: What a shot!</div>
+                            <div class="message">CricketExpert: Pitch is favoring spinners</div>
+                        </div>
+                        <div class="chat-input">
+                            <input type="text" placeholder="Type your message...">
+                            <button>Send</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>&copy; 2025 LivStream.xyz - All rights reserved. This is a demo streaming website.</p>
+            <p>Privacy Policy | Terms of Service | Contact Us</p>
+        </footer>
     </div>
 
-    <!-- ✅ Real-Time Date & Time Box -->
-    <div class="date-time-box" id="dateTimeBox">Loading Date & Time...</div>
-
     <script>
-        var ws = null;
-        var reconnectInterval = 5000;
-
-        function openWebSocket() {
-            var url = 'wss://1xbet.lk/games-frame/sockets/crash?whence=55&fcountry=208&ref=1&gr=911&appGuid=games-web-app-unknown&lng=en&access_token=eyJhbGciOiJFUzI1NiIsImtpZCI6IjEiLCJ0eXAiOiJKV1QifQ.eyJzdWIiOiI1MC8xMzY4OTcwMzk1IiwicGlkIjoiMSIsImp0aSI6IjAvYWE3MDdjMmUxYjRlYTViMGI3ZDk2ZTQ1NjVlMWJhYTRhOWFhZDVjNWY5ZGJjODA0NzVlYWQ2NTY2ZDI1NDg0OCIsImFwcCI6Ik5BIiwiaW5uZXIiOiJ0cnVlIiwibmJmIjoxNzU3NDc2MjIzLCJleHAiOjE3NTc0OTA2MjMsImlhdCI6MTc1NzQ3NjIyM30.gpiX7orN782EcoMQ0ivLmWuZ0gve5aID9FbZh9eT0SXIx5sx9lBzp3vTMwnt7M-ZdUixAYC4bylcSNBNZA-SZA';
-            ws = new WebSocket(url);
-
-            ws.onopen = function() {
-                console.log('✅ WebSocket Opened');
-                ws.send('{"protocol":"json","version":1}\x1e');
-                ws.send('{"arguments":[{"activity":30,"currency":119}],"invocationId":"0","target":"Guest","type":1}\x1e');
-            };
-
-            ws.onclose = function() {
-                console.log('⚠️ WebSocket Closed! Reconnecting...');
-                setTimeout(openWebSocket, reconnectInterval);
-            };
-
-            ws.onmessage = function(event) {
-                try {
-                    var data = JSON.parse(event.data.slice(0, -1));
-                    if (data.target === 'OnCrash' && data.arguments && data.arguments.length > 0) {
-                        updateCrashValue(data.arguments[0].f);
-                    }
-                } catch (error) {
-                    console.error('❌ Error Processing Data:', error);
-                }
-            };
-
-            ws.onerror = function(event) {
-                console.error('❌ WebSocket Error:', event);
-            };
-        }
-
-        function updateCrashValue(value) {
-            var crashValueElement = document.getElementById('crashValue');
-            var oddCircle = document.getElementById('oddCircle');
-
-            crashValueElement.innerText = value.toFixed(2);
-
-            // Show Black Circle for ODD values
-            if (Math.floor(value) % 2 !== 0) {
-                oddCircle.style.display = 'block';
-            } else {
-                oddCircle.style.display = 'none';
+        // Simple interactivity for the video player
+        document.querySelector('.play-button').addEventListener('click', function() {
+            alert('Stream would start playing. This is a frontend demo.');
+        });
+        
+        document.querySelector('.chat-input button').addEventListener('click', function() {
+            const input = document.querySelector('.chat-input input');
+            if (input.value.trim() !== '') {
+                const messageElement = document.createElement('div');
+                messageElement.className = 'message';
+                messageElement.textContent = 'You: ' + input.value;
+                document.querySelector('.chat-messages').appendChild(messageElement);
+                input.value = '';
+                
+                // Scroll to bottom
+                document.querySelector('.chat-messages').scrollTop = document.querySelector('.chat-messages').scrollHeight;
             }
-
-            crashValueElement.style.transform = 'scale(1.2)';
-            setTimeout(() => {
-                crashValueElement.style.transform = 'scale(1)';
-            }, 300);
-        }
-
-        function updateRealTimeDate() {
-            var dateElement = document.getElementById('dateTimeBox');
-            var now = new Date();
-            var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            var formattedDate = now.toLocaleDateString('en-US', options);
-            var formattedTime = now.toLocaleTimeString();
-            dateElement.innerText = formattedDate + ' - ' + formattedTime;
-        }
-
-        // Update Real-Time Date and Time Every Second
-        setInterval(updateRealTimeDate, 1000);
-        updateRealTimeDate(); // Run Immediately on Page Load
-
-        openWebSocket();
-
-        // Function to Close the Special Notice Box
-        function closeNotice() {
-            document.getElementById('specialNoticeBox').style.display = 'none';
-        }
+        });
     </script>
 </body>
 </html>
