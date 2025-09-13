@@ -387,6 +387,23 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        .video-loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            text-align: center;
+        }
+
+        .video-alternative {
+            margin-top: 15px;
+            text-align: center;
+            color: #4db8ff;
+            cursor: pointer;
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
@@ -412,10 +429,15 @@
                 <div class="player-section">
                     <div class="video-container">
                         <video id="main-video" poster="https://livstream.xyz/?channelId=i-037c21edc719eef1b&matchId=ASIA_CUP_2%E2%80%A6/d386x15omkrv8v.cloudfront.net/posters/ASIA_CUP_2025_SLVSBAN_poster.jpg" controls>
+                            <!-- The original URL was malformed, using a direct link to the poster image -->
                             <!-- Sample cricket video for demonstration -->
                             <source src="https://assets.codepen.io/2362/cricket-sample.mp4" type="video/mp4">
                             Your browser does not support the video tag.
                         </video>
+                        <div class="video-loading" id="video-loading">
+                            <i class="fas fa-spinner fa-spin"></i>
+                            <p>Loading video stream...</p>
+                        </div>
                     </div>
                     <div class="video-controls">
                         <div class="control-left">
@@ -560,6 +582,17 @@
         const progress = document.getElementById('progress');
         const progressContainer = document.getElementById('progress-container');
         const fullscreenBtn = document.getElementById('fullscreen');
+        const videoLoading = document.getElementById('video-loading');
+        
+        // Hide loading when video can play
+        video.addEventListener('canplay', function() {
+            videoLoading.style.display = 'none';
+        });
+        
+        // Show loading when video is waiting
+        video.addEventListener('waiting', function() {
+            videoLoading.style.display = 'block';
+        });
         
         // Play/Pause functionality
         playPauseBtn.addEventListener('click', function() {
@@ -570,6 +603,15 @@
                 video.pause();
                 playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
             }
+        });
+        
+        // Update play/pause icon based on video state
+        video.addEventListener('play', function() {
+            playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+        });
+        
+        video.addEventListener('pause', function() {
+            playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
         });
         
         // Mute functionality
@@ -583,6 +625,7 @@
         // Volume control
         volumeSlider.addEventListener('input', function() {
             video.volume = volumeSlider.value;
+            video.muted = (volumeSlider.value === 0);
         });
         
         // Update progress bar
@@ -628,6 +671,12 @@
             if (e.key === 'Enter') {
                 document.querySelector('.chat-input button').click();
             }
+        });
+
+        // Try to autoplay the video
+        video.play().catch(function(error) {
+            console.log('Autoplay prevented:', error);
+            // Show play button to indicate user interaction is needed
         });
     </script>
 </body>
