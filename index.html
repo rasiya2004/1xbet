@@ -1,110 +1,211 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>1xBet Crash Game Real-Time Viewer</title>
-<style>
-  body { font-family: Arial, sans-serif; background: #0c0e2a; color: #0f0; padding: 20px; }
-  #status { margin-bottom: 10px; }
-  #output { white-space: pre-wrap; background: #111; padding: 10px; height: 300px; overflow-y: scroll; border-radius: 5px; border: 1px solid #0f0; }
-  #prediction { margin-top: 15px; font-size: 1.2em; font-weight: bold; }
-  button { margin-top: 10px; padding: 10px; border: none; border-radius: 5px; cursor: pointer; background: #0f0; color: #000; font-weight: bold; }
-</style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BYTEX 888STRZ CRASH PREDICTOR</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-align: center;
+            color: #ffffff;
+            background: url('https://dl.dropboxusercontent.com/scl/fi/opptdtk92bl4jvw6t31yq/IMG-20250218-WA0007.jpg?rlkey=4br287q5onf9v4myjb7usbk1d&st=rhx8f9zt') no-repeat center center fixed;
+            background-size: cover;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            position: relative;
+        }
+        /* 🔥 Title Box (centered) */
+        .title-box {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px 30px;
+            border-radius: 15px;
+            border: 3px solid #ffcc00;
+            font-size: 1.5em;
+            font-weight: bold;
+            text-transform: uppercase;
+            color: #ffcc00;
+            box-shadow: 0px 0px 15px rgba(255, 204, 0, 0.8);
+            position: absolute;
+            top: 20px;
+        }
+        /* 🔥 Special Notice Box */
+        .special-notice-box {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px 30px;
+            border-radius: 15px;
+            border: 3px solid #ffcc00;
+            font-size: 1.2em;
+            color: #ffffff;
+            position: absolute;
+            top: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            z-index: 3;
+            box-shadow: 0px 0px 15px rgba(255, 204, 0, 0.8);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .special-notice-box p {
+            margin: 0;
+            text-align: center;
+        }
+        /* Close Button */
+        .close-btn {
+            background-color: red;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            margin-top: 15px;
+        }
+        /* 🔥 Date-Time Box (below the Title Box) */
+        .date-time-box {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 10px 20px;
+            border-radius: 15px;
+            border: 3px solid #ffcc00;
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #ffffff;
+            position: absolute;
+            bottom: 50px;
+            z-index: 2;
+            box-shadow: 0px 0px 10px rgba(255, 204, 0, 0.8);
+        }
+        #crashValue {
+            font-size: 3.5em;
+            padding: 20px;
+            color: #00d1b2;
+            line-height: 80px;
+            transition: transform 0.3s ease-in-out;
+            display: inline-block;
+            position: relative;
+            z-index: 2;
+        }
+        .circle {
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1;
+            background: black;
+            border: 5px solid transparent;
+            animation: rainbowBorder 3s linear infinite;
+            display: none;
+        }
+        /* Unlimited Color Changing Border */
+        @keyframes rainbowBorder {
+            0% { border-color: red; }
+            20% { border-color: orange; }
+            40% { border-color: yellow; }
+            60% { border-color: lime; }
+            80% { border-color: blue; }
+            100% { border-color: violet; }
+        }
+        .whatsapp-box {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px 30px;
+            border-radius: 15px;
+            border: 3px solid #ffcc00;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #ffffff;
+            position: absolute;
+            bottom: 100px;
+            z-index: 2;
+            box-shadow: 0px 0px 10px rgba(255, 204, 0, 0.8);
+        }
+        .whatsapp-box a {
+            color: #ffcc00;
+            text-decoration: none;
+        }
+    </style>
 </head>
 <body>
-<h1>1xBet Crash Game Viewer & Predictor</h1>
-<div id="status">Status: Disconnected</div>
-<button id="connectBtn">Connect</button>
-<button id="disconnectBtn" disabled>Disconnect</button>
-<div id="output"></div>
-<div id="prediction">Prediction: N/A</div>
-
-<script>
-(() => {
-  const wsUrl = 'wss://1xbet.lk/games-frame/sockets/crash?ref=1&gr=911&whence=55&fcountry=208&appGuid=games-web-app-default-web-v3&lng=en&v=1.5)}&access_token=eyJhbGciOiJFUzI1NiIsImtpZCI6IjEiLCJ0eXAiOiJKV1QifQ.eyJzdWIiOiI1MC8xMzY4OTcwMzk1IiwicGlkIjoiMSIsImp0aSI6IjAvNDllNDY4MzBiY2QyNTNiMTNkMGZkOGJmYzIxODk0ZDM3NDY0MDI5YmFkOTMwNzRiYmIzMTkzYjc3NDhiNzc0OCIsImFwcCI6Ik5BIiwiaW5uZXIiOiJ0cnVlIiwibmJmIjoxNzU4MjAxNzg4LCJleHAiOjE3NTgyMTYxODgsImlhdCI6MTc1ODIwMTc4OH0.iVqSy-a5TdEO3hm4_4RczgCV0SArgacAtAO80q7MjobD6uY6JhKf5OV05J95V-Oug0dax96tLXmtIUyppPtYyg';
-
-  let ws = null;
-  let dataHistory = [];
-
-  const statusElem = document.getElementById('status');
-  const outputElem = document.getElementById('output');
-  const predictionElem = document.getElementById('prediction');
-  const connectBtn = document.getElementById('connectBtn');
-  const disconnectBtn = document.getElementById('disconnectBtn');
-
-  function log(msg) {
-    outputElem.textContent += msg + '\n';
-    outputElem.scrollTop = outputElem.scrollHeight;
-  }
-
-  // Simple prediction: average last 5 values scaled randomly
-  function predictNext(data) {
-    if (data.length === 0) return 'N/A';
-    const lastFive = data.slice(-5);
-    const avg = lastFive.reduce((a,b) => a+b, 0) / lastFive.length;
-    // Random small variation +/-15%
-    const prediction = avg * (0.85 + Math.random()*0.3);
-    return prediction.toFixed(2) + 'x';
-  }
-
-  function connect() {
-    if (ws) return;
-
-    ws = new WebSocket(wsUrl);
-
-    statusElem.textContent = 'Status: Connecting...';
-    connectBtn.disabled = true;
-    disconnectBtn.disabled = false;
-
-    ws.onopen = () => {
-      statusElem.textContent = 'Status: Connected';
-      log('WebSocket connected');
-    };
-
-    ws.onerror = err => {
-      log('WebSocket error: ' + JSON.stringify(err));
-      statusElem.textContent = 'Status: Error';
-    };
-
-    ws.onclose = () => {
-      statusElem.textContent = 'Status: Disconnected';
-      log('WebSocket disconnected');
-      connectBtn.disabled = false;
-      disconnectBtn.disabled = true;
-      ws = null;
-    };
-
-    ws.onmessage = event => {
-      log('Received: ' + event.data);
-
-      // Attempt to parse meaningful multiplier value
-      try {
-        const parsed = JSON.parse(event.data);
-        // Look for multiplier value in likely fields
-        let multiplier = parsed.f || parsed.crash || parsed.multiplier || null;
-        if (multiplier !== null) {
-          multiplier = parseFloat(multiplier);
-          if (!isNaN(multiplier)) {
-            dataHistory.push(multiplier);
-            predictionElem.textContent = 'Prediction: ' + predictNext(dataHistory);
-          }
+    <div class="title-box">BYTEX 888STRZ CRASH PREDICTOR</div> <!-- ✅ Title BOX -->
+    <div class="circle" id="oddCircle"></div> <!-- ✅ Odd Number Circle -->
+    <div id="crashValue">0.00</div>
+    <!-- ✅ Special Notice Box -->
+    <div class="special-notice-box" id="specialNoticeBox">
+        <p><strong>BYTEX SPECIAL NOTICE JUST NOW:</strong></p>
+        <p>මෙම BYTEX CRASH SIGNAL යෙදුම මගින් ලබා දෙන CRASH SIGNAL 888STRZ CRASH සදහා වැඩ කරයි. විශේෂ නිවේදනයයි මෙහි පෙන්වන ODD ඔබගේ 888STRZ CRASH හි පිපුරු පසු පෙන්වනවානම් අනිවාර්යක් BYTEX ඊජිප්තු VPN මිලදී ගෙන CONNECTED කර බාවිතා කරන්න. SERVER මගින් ලැබෙන සිග්නල් SLOW වීම මෙයට හේතුවයි. ස්තුතියි BYTEX WHATSAPP OWNER: +94 76 732 4225</p>
+        <button class="close-btn" onclick="closeNotice()">CLOSE</button>
+    </div>
+    <!-- ✅ Real-Time Date & Time Box -->
+    <div class="date-time-box" id="dateTimeBox">Loading Date & Time...</div>
+    <script>
+        var ws = null;
+        var reconnectInterval = 5000;
+        function openWebSocket() {
+            var url = 'wss://1xbet.lk/games-frame/sockets/crash?ref=1&gr=911&whence=55&fcountry=208&appGuid=games-web-app-default-web-v3&lng=en&v=1.5)}&access_token=eyJhbGciOiJFUzI1NiIsImtpZCI6IjEiLCJ0eXAiOiJKV1QifQ.eyJzdWIiOiI1MC8xMzY4OTcwMzk1IiwicGlkIjoiMSIsImp0aSI6IjAvNDllNDY4MzBiY2QyNTNiMTNkMGZkOGJmYzIxODk0ZDM3NDY0MDI5YmFkOTMwNzRiYmIzMTkzYjc3NDhiNzc0OCIsImFwcCI6Ik5BIiwiaW5uZXIiOiJ0cnVlIiwibmJmIjoxNzU4MjAxNzg4LCJleHAiOjE3NTgyMTYxODgsImlhdCI6MTc1ODIwMTc4OH0.iVqSy-a5TdEO3hm4_4RczgCV0SArgacAtAO80q7MjobD6uY6JhKf5OV05J95V-Oug0dax96tLXmtIUyppPtYyg';
+            ws = new WebSocket(url);
+            ws.onopen = function() {
+                console.log('✅ WebSocket Opened');
+                ws.send('{"protocol":"json","version":1}\x1e');
+                ws.send('{"arguments":[{"activity":30,"currency":119}],"invocationId":"0","target":"Guest","type":1}\x1e');
+            };
+            ws.onclose = function() {
+                console.log('⚠️ WebSocket Closed! Reconnecting...');
+                setTimeout(openWebSocket, reconnectInterval);
+            };
+            ws.onmessage = function(event) {
+                try {
+                    var data = JSON.parse(event.data.slice(0, -1));
+                    if (data.target === 'OnCrash' && data.arguments && data.arguments.length > 0) {
+                        updateCrashValue(data.arguments[0].f);
+                    }
+                } catch (error) {
+                    console.error('❌ Error Processing Data:', error);
+                }
+            };
+            ws.onerror = function(event) {
+                console.error('❌ WebSocket Error:', event);
+            };
         }
-      } catch(e) {
-        // Ignore parsing errors on unexpected formats
-      }
-    };
-  }
-
-  function disconnect() {
-    if (ws) {
-      ws.close();
-    }
-  }
-
-  connectBtn.addEventListener('click', connect);
-  disconnectBtn.addEventListener('click', disconnect);
-})();
-</script>
+        function updateCrashValue(value) {
+            var crashValueElement = document.getElementById('crashValue');
+            var oddCircle = document.getElementById('oddCircle');
+            crashValueElement.innerText = value.toFixed(2);
+            // Show Black Circle for ODD values
+            if (Math.floor(value) % 2 !== 0) {
+                oddCircle.style.display = 'block';
+            } else {
+                oddCircle.style.display = 'none';
+            }
+            crashValueElement.style.transform = 'scale(1.2)';
+            setTimeout(() => {
+                crashValueElement.style.transform = 'scale(1)';
+            }, 300);
+        }
+        function updateRealTimeDate() {
+            var dateElement = document.getElementById('dateTimeBox');
+            var now = new Date();
+            var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            var formattedDate = now.toLocaleDateString('en-US', options);
+            var formattedTime = now.toLocaleTimeString();
+            dateElement.innerText = formattedDate + ' - ' + formattedTime;
+        }
+        // Update Real-Time Date and Time Every Second
+        setInterval(updateRealTimeDate, 1000);
+        updateRealTimeDate(); // Run Immediately on Page Load
+        openWebSocket();
+        // Function to Close the Special Notice Box
+        function closeNotice() {
+            document.getElementById('specialNoticeBox').style.display = 'none';
+        }
+    </script>
 </body>
 </html>
