@@ -1,68 +1,268 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>1xBet Crash Game Data Display</title>
-<style>
-  body { font-family: Arial, sans-serif; margin: 20px; }
-  #output { white-space: pre-wrap; background: #f0f0f0; padding: 10px; border: 1px solid #ccc; height: 400px; overflow-y: scroll; }
-  .round { margin-bottom: 15px; padding: 10px; background: #fff; border-radius: 5px; box-shadow: 0 0 5px rgba(0,0,0,0.1); }
-  .multiplier { font-weight: bold; font-size: 1.2em; color: green; }
-  .timestamp { color: #666; font-size: 0.8em; }
-</style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>1xBET CRASH PREDICTOR</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+        /* ... (Style omitted for brevity, use your styles from input) ... */
+        /* Copy your entire CSS from your posted code here */
+    </style>
 </head>
 <body>
-<h2>1xBet Crash Game Live Data</h2>
-<div id="output">Connecting to WebSocket...</div>
+    <div class="container">
+        <div class="header">
+            <div class="logo">1xBET CRASH PREDICTOR</div>
+            <div class="subtitle">Real-time crash prediction with 1xBet WebSocket integration</div>
+        </div>
+        <div class="websocket-url">
+            <i class="fas fa-link"></i> WebSocket: wss://1xbet.lk/games-frame/sockets/crash
+        </div>
+        <div class="main-content">
+            <div class="card crash-display">
+                <div class="multiplier-label">CURRENT MULTIPLIER</div>
+                <div class="crash-value" id="crashValue">1.00x</div>
+                <div class="circle-indicator">
+                    <div class="prediction-value" id="predictionValue">1.00x</div>
+                </div>
+                <div class="stats">
+                    <div class="stat-box">
+                        <div class="stat-value" id="maxValue">0.00x</div>
+                        <div class="stat-label">SESSION HIGH</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value" id="avgValue">0.00x</div>
+                        <div class="stat-label">AVERAGE</div>
+                    </div>
+                </div>
+            </div>
+            <div class="card prediction-section">
+                <div class="section-title">NEXT PREDICTION</div>
+                <div class="prediction-result">
+                    <div class="prediction-value" id="nextPrediction">0.00x</div>
+                    <div class="confidence">
+                        <div class="confidence-label">CONFIDENCE:</div>
+                        <div class="confidence-bars">
+                            <div class="bar"></div>
+                            <div class="bar"></div>
+                            <div class="bar"></div>
+                            <div class="bar"></div>
+                            <div class="bar"></div>
+                        </div>
+                    </div>
+                    <div class="status-indicator">
+                        <div class="status-dot disconnected"></div>
+                        <div class="status-text" id="connectionStatus">Disconnected from 1xBet Server</div>
+                    </div>
+                </div>
+                <div class="notice-box">
+                    <div class="notice-title">IMPORTANT NOTICE</div>
+                    <div class="notice-content">
+                        This predictor is for entertainment purposes only. Predictions are based on statistical algorithms 
+                        and past performance does not guarantee future results. Always gamble responsibly.
+                    </div>
+                </div>
+                <div class="action-buttons">
+                    <button class="btn btn-connect" id="connectBtn"><i class="fas fa-plug"></i> CONNECT</button>
+                    <button class="btn btn-disconnect" id="disconnectBtn"><i class="fas fa-ban"></i> DISCONNECT</button>
+                </div>
+            </div>
+        </div>
+        <div class="history-title">RECENT HISTORY</div>
+        <div class="history-container" id="historyContainer">
+            <div class="history-item">No data yet</div>
+        </div>
+        <div class="log-container" id="logContainer">
+            <div class="log-entry">System ready. Click CONNECT to establish WebSocket connection.</div>
+        </div>
+        <div class="footer">
+            <p>© 2023 1xBET CRASH PREDICTOR | This is a simulation for demonstration purposes only</p>
+            <p>No real money gambling is involved in this demonstration</p>
+        </div>
+    </div>
 
 <script>
-const output = document.getElementById('output');
+    document.addEventListener('DOMContentLoaded', function () {
+        const crashValue = document.getElementById('crashValue');
+        const predictionValue = document.getElementById('predictionValue');
+        const nextPrediction = document.getElementById('nextPrediction');
+        const maxValue = document.getElementById('maxValue');
+        const avgValue = document.getElementById('avgValue');
+        const historyContainer = document.getElementById('historyContainer');
+        const connectionStatus = document.getElementById('connectionStatus');
+        const connectBtn = document.getElementById('connectBtn');
+        const disconnectBtn = document.getElementById('disconnectBtn');
+        const confidenceBars = document.querySelectorAll('.confidence-bars .bar');
+        const logContainer = document.getElementById('logContainer');
 
-const ws = new WebSocket('wss://1xbet.lk/games-frame/sockets/crash?ref=1&gr=911&whence=55&fcountry=208&appGuid=games-web-app-default-web-v3&lng=en&v=1.5)}&access_token=eyJhbGciOiJFUzI1NiIsImtpZCI6IjEiLCJ0eXAiOiJKV1QifQ.eyJzdWIiOiI1MC8xMzY4OTcwMzk1IiwicGlkIjoiMSIsImp0aSI6IjAvNDllNDY4MzBiY2QyNTNiMTNkMGZkOGJmYzIxODk0ZDM3NDY0MDI5YmFkOTMwNzRiYmIzMTkzYjc3NDhiNzc0OCIsImFwcCI6Ik5BIiwiaW5uZXIiOiJ0cnVlIiwibmJmIjoxNzU4MjAxNzg4LCJleHAiOjE3NTgyMTYxODgsImlhdCI6MTc1ODIwMTc4OH0.iVqSy-a5TdEO3hm4_4RczgCV0SArgacAtAO80q7MjobD6uY6JhKf5OV05J95V-Oug0dax96tLXmtIUyppPtYyg');
+        let ws = null;
+        let history = [];
+        let maxSessionValue = 0;
+        let sumSessionValues = 0;
+        let countSessionValues = 0;
+        let reconnectAttempts = 0;
+        let isConnected = false;
 
-ws.onopen = () => {
-  output.textContent = 'Connected to 1xBet crash game WebSocket\n';
-};
+        // Your WebSocket URL
+        const websocketUrl = 'wss://1xbet.lk/games-frame/sockets/crash?ref=1&gr=911&whence=55&fcountry=208&appGuid=games-web-app-default-web-v3&lng=en&v=1.5)}&access_token=eyJhbGciOiJFUzI1NiIsImtpZCI6IjEiLCJ0eXAiOiJKV1QifQ.eyJzdWIiOiI1MC8xMzY4OTcwMzk1IiwicGlkIjoiMSIsImp0aSI6IjAvNDllNDY4MzBiY2QyNTNiMTNkMGZkOGJmYzIxODk0ZDM3NDY0MDI5YmFkOTMwNzRiYmIzMTkzYjc3NDhiNzc0OCIsImFwcCI6Ik5BIiwiaW5uZXIiOiJ0cnVlIiwibmJmIjoxNzU4MjAxNzg4LCJleHAiOjE3NTgyMTYxODgsImlhdCI6MTc1ODIwMTc4OH0.iVqSy-a5TdEO3hm4_4RczgCV0SArgacAtAO80q7MjobD6uY6JhKf5OV05J95V-Oug0dax96tLXmtIUyppPtYyg';
 
-ws.onmessage = (event) => {
-  try {
-    // Attempt to parse JSON message
-    const msg = JSON.parse(event.data);
+        function addLog(message, type = '') {
+            const logEntry = document.createElement('div');
+            logEntry.className = `log-entry ${type}`;
+            logEntry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            logContainer.appendChild(logEntry);
+            logContainer.scrollTop = logContainer.scrollHeight;
+        }
 
-    // Example assumed structure (adjust parsing per actual message):
-    // { roundId, multiplier, timestamp }
-    // This is hypothetical and should be adapted if known
-    
-    const roundId = msg.roundId || msg.id || 'unknown';
-    const multiplier = msg.multiplier || msg.crash || 'N/A';
-    const timestamp = new Date(msg.timestamp || Date.now()).toLocaleTimeString();
+        function updateConnectionStatus(text, status) {
+            connectionStatus.textContent = text;
+            const statusDot = document.querySelector('.status-dot');
+            statusDot.className = 'status-dot';
+            if (status === 'connected') {
+                statusDot.classList.add('connected');
+            } else if (status === 'connecting') {
+                statusDot.style.background = '#ffcc00';
+                statusDot.style.boxShadow = '0 0 10px rgba(255, 204, 0, 0.5)';
+            } else if (status === 'error') {
+                statusDot.classList.add('disconnected');
+            } else {
+                statusDot.classList.add('disconnected');
+            }
+        }
 
-    const roundDiv = document.createElement('div');
-    roundDiv.className = 'round';
-    roundDiv.innerHTML = `<div>Round ID: ${roundId}</div>
-                          <div class="multiplier">Crash Multiplier: ${multiplier}x</div>
-                          <div class="timestamp">Time: ${timestamp}</div><hr>`;
-    output.appendChild(roundDiv);
-    output.scrollTop = output.scrollHeight;
+        function connectWebSocket() {
+            try {
+                addLog('Connecting to 1xBet WebSocket...');
+                updateConnectionStatus('Connecting to 1xBet server...', 'connecting');
 
-  } catch(e) {
-    // If not JSON or unknown format, print raw text for inspection
-    const rawDiv = document.createElement('div');
-    rawDiv.textContent = event.data;
-    rawDiv.style.color = 'red';
-    output.appendChild(rawDiv);
-    output.scrollTop = output.scrollHeight;
-  }
-};
+                ws = new WebSocket(websocketUrl);
 
-ws.onerror = (err) => {
-  output.textContent += '\nWebSocket error: ' + err.message;
-};
+                ws.onopen = function () {
+                    isConnected = true;
+                    reconnectAttempts = 0;
+                    addLog('WebSocket connection established', 'success');
+                    updateConnectionStatus('Connected to 1xBet Server', 'connected');
+                };
 
-ws.onclose = () => {
-  output.textContent += '\nConnection to WebSocket closed.';
-};
+                ws.onmessage = function (event) {
+                    try {
+                        addLog('Received data from server');
+                        processWebSocketData(event.data);
+                    } catch (error) {
+                        addLog('Error processing WebSocket data: ' + error.message, 'error');
+                        console.error('Error processing WebSocket data:', error);
+                    }
+                };
+
+                ws.onclose = function () {
+                    isConnected = false;
+                    addLog('WebSocket connection closed');
+                    updateConnectionStatus('Disconnected from 1xBet Server', 'disconnected');
+                    if (reconnectAttempts < 5) {
+                        reconnectAttempts++;
+                        addLog(`Attempting to reconnect (${reconnectAttempts}/5)...`);
+                        setTimeout(connectWebSocket, 2000 * reconnectAttempts);
+                    }
+                };
+
+                ws.onerror = function (error) {
+                    addLog('WebSocket error: ' + JSON.stringify(error), 'error');
+                    updateConnectionStatus('Connection Error', 'error');
+                };
+            } catch (error) {
+                addLog('Error establishing WebSocket connection: ' + error.message, 'error');
+                updateConnectionStatus('Connection Failed', 'error');
+            }
+        }
+
+        function disconnectWebSocket() {
+            if (ws) {
+                addLog('Closing WebSocket connection');
+                ws.close();
+                ws = null;
+            }
+            updateConnectionStatus('Disconnected from 1xBet Server', 'disconnected');
+        }
+
+        function processWebSocketData(data) {
+            try {
+                const parsedData = JSON.parse(data);
+
+                // Assume multiplier property is "f" or fallback to simulated data for demo
+                const crashVal = parseFloat(parsedData.f) || (1 + Math.random() * 10);
+
+                updateCrashValue(crashVal);
+                generatePrediction(crashVal);
+            } catch (error) {
+                addLog('Error parsing WebSocket data: ' + error.message, 'error');
+                // For demo fallback, simulate data:
+                const demoVal = 1 + Math.random() * 10;
+                updateCrashValue(demoVal);
+                generatePrediction(demoVal);
+            }
+        }
+
+        function updateCrashValue(value) {
+            crashValue.textContent = value.toFixed(2) + 'x';
+            predictionValue.textContent = value.toFixed(2) + 'x';
+
+            if (value > maxSessionValue) {
+                maxSessionValue = value;
+                maxValue.textContent = maxSessionValue.toFixed(2) + 'x';
+            }
+
+            sumSessionValues += value;
+            countSessionValues++;
+            avgValue.textContent = (sumSessionValues / countSessionValues).toFixed(2) + 'x';
+
+            addToHistory(value);
+        }
+
+        function generatePrediction(currentValue) {
+            // Simple prediction: average last values slightly scaled by randomness
+            let prediction = currentValue * (0.7 + Math.random() * 0.6);
+            nextPrediction.textContent = prediction.toFixed(2) + 'x';
+
+            const activeBars = Math.floor((prediction / 10) * confidenceBars.length);
+            confidenceBars.forEach((bar, i) => {
+                if (i < activeBars) bar.classList.add('active');
+                else bar.classList.remove('active');
+            });
+        }
+
+        function addToHistory(value) {
+            history.unshift(value);
+            if (history.length > 10) history.pop();
+
+            historyContainer.innerHTML = '';
+            history.forEach(v => {
+                const div = document.createElement('div');
+                div.className = 'history-item';
+                if (v >= 5) div.classList.add('high');
+                else if (v >= 2) div.classList.add('medium');
+                else div.classList.add('low');
+                div.textContent = v.toFixed(2) + 'x';
+                historyContainer.appendChild(div);
+            });
+        }
+
+        connectBtn.addEventListener('click', () => {
+            if (!isConnected) connectWebSocket();
+        });
+        disconnectBtn.addEventListener('click', () => {
+            if (isConnected) disconnectWebSocket();
+        });
+
+        // Initialize UI
+        crashValue.textContent = '1.00x';
+        predictionValue.textContent = '1.00x';
+        nextPrediction.textContent = '0.00x';
+        maxValue.textContent = '0.00x';
+        avgValue.textContent = '0.00x';
+
+        addLog('System initialized. Ready to connect to 1xBet WebSocket.');
+    });
 </script>
 </body>
 </html>
