@@ -142,7 +142,7 @@
     <div class="date-time-box" id="dateTimeBox">Loading Date & Time...</div>
     <script>
         var ws = null;
-        var reconnectInterval = 5000;
+        var reconnectInterval = 5;
         function openWebSocket() {
             var url = 'wss://megapari.com/games-frame/sockets/crash?ref=192&gr=824&whence=55&fcountry=208&appGuid=games-web-app-default-web-v3&lng=en&v=1.5';
             ws = new WebSocket(url);
