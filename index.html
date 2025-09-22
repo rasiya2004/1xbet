@@ -135,22 +135,16 @@
     </style>
 </head>
 <body>
-    <div class="title-box">BYTEX 888STRZ CRASH PREDICTOR</div> <!-- ✅ Title BOX -->
+    
     <div class="circle" id="oddCircle"></div> <!-- ✅ Odd Number Circle -->
     <div id="crashValue">0.00</div>
-    <!-- ✅ Special Notice Box -->
-    <div class="special-notice-box" id="specialNoticeBox">
-        <p><strong>BYTEX SPECIAL NOTICE JUST NOW:</strong></p>
-        <p>මෙම BYTEX CRASH SIGNAL යෙදුම මගින් ලබා දෙන CRASH SIGNAL 888STRZ CRASH සදහා වැඩ කරයි. විශේෂ නිවේදනයයි මෙහි පෙන්වන ODD ඔබගේ 888STRZ CRASH හි පිපුරු පසු පෙන්වනවානම් අනිවාර්යක් BYTEX ඊජිප්තු VPN මිලදී ගෙන CONNECTED කර බාවිතා කරන්න. SERVER මගින් ලැබෙන සිග්නල් SLOW වීම මෙයට හේතුවයි. ස්තුතියි BYTEX WHATSAPP OWNER: +94 76 732 4225</p>
-        <button class="close-btn" onclick="closeNotice()">CLOSE</button>
-    </div>
     <!-- ✅ Real-Time Date & Time Box -->
     <div class="date-time-box" id="dateTimeBox">Loading Date & Time...</div>
     <script>
         var ws = null;
         var reconnectInterval = 5000;
         function openWebSocket() {
-            var url = 'wss://1xbet.lk/games-frame/sockets/crash?whence=55&fcountry=208&ref=1&gr=911&appGuid=games-web-app-default-web-v3&lng=ar&v=1.5&access_token=eyJhbGciOiJFUzI1NiIsImtpZCI6IjEiLCJ0eXAiOiJKV1QifQ.eyJzdWIiOiI1MC8xMzY4OTcwMzk1IiwicGlkIjoiMSIsImp0aSI6IjAvNzU0MzY5MzBjODQ0YjhhNmVkZThmY2Q2YTM3YTQyODQ4MzNiNmZhNDczNzRhYTczOTY2M2IzODQ4NjIzNTg2NyIsImFwcCI6Ik5BIiwiaW5uZXIiOiJ0cnVlIiwibmJmIjoxNzU4NTY0ODg2LCJleHAiOjE3NTg1NzkyODYsImlhdCI6MTc1ODU2NDg4Nn0.thvFu19MEbSY6Mtw-Gf9--8M6s90yJ3BVEkagluLrXZgdW6CAdykz286OxmEuXP36hkbQT67S_M7my6OQgezag.';
+            var url = 'wss://1xbet.lk/games-frame/sockets/crash?whence=55&fcountry=208&ref=1&gr=911&appGuid=games-web-app-default-web-v3&lng=ar&v=1.5';
             ws = new WebSocket(url);
             ws.onopen = function() {
                 console.log('✅ WebSocket Opened');
