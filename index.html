@@ -151,7 +151,7 @@
         var reconnectInterval = 5000;
         function openWebSocket() {
             var url = 'wss://1xbet.lk/games-frame/sockets/crash?whence=55&fcountry=208&ref=1&gr=911&appGuid=games-web-app-default-web-v3&lng=en&v=1.5';
-            ws = new WebSocket();
+            ws = new WebSocket(url);
             ws.onopen = function() {
                 console.log('✅ WebSocket Opened');
                 ws.send('{"protocol":"json","version":1}\x1e');
