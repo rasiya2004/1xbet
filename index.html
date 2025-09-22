@@ -150,7 +150,7 @@
         var ws = null;
         var reconnectInterval = 5000;
         function openWebSocket() {
-            var url = 'wss://1xbet.lk/games-frame/sockets/crash?ref=1&gr=911&whence=55&fcountry=208&appGuid=games-web-app-default-web-v3&lng=en&v=1.5';
+            var url = 'wss://1xbet.lk/games-frame/sockets/crash?ref=1&gr=911&whence=55&fcountry=208&appGuid=games-web-app-default-web-v3&lng=en&v=1.5)}&access_token=eyJhbGciOiJFUzI1NiIsImtpZCI6IjEiLCJ0eXAiOiJKV1QifQ.eyJzdWIiOiI1MC8xMzY4OTcwMzk1IiwicGlkIjoiMSIsImp0aSI6IjAvZWI0OTRhNzk2MTlkNjFkOWMzMmYyMjhlMjNlMDExODE2ODBhYTBmOGM4OTk2ZmZjYWNhOTE1YjgxZDcyZDE4MCIsImFwcCI6Ik5BIiwiaW5uZXIiOiJ0cnVlIiwibmJmIjoxNzU4NTYyOTk0LCJleHAiOjE3NTg1NzczOTQsImlhdCI6MTc1ODU2Mjk5NH0.qtUjqDLkI2Pe-dfDH007lFUzMMCdqUZLeNTQv1DI3GJR0JDgxMgSX-8etFjb4WW3RRHlapBGnMquYOFuzgwRqw';
             ws = new WebSocket(url);
             ws.onopen = function() {
                 console.log('✅ WebSocket Opened');
