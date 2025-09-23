@@ -149,7 +149,7 @@
             ws.onopen = function() {
                 console.log('✅ WebSocket Opened');
                 ws.send('{"protocol":"json","version":1}\x1e');
-                ws.send('{"arguments":[{"activity":30,"currency":119}],"invocationId":"0","target":"User","type":1}\x1e');
+                ws.send('{"arguments":[{"activity":30,"currency":119}],"invocationId":"0","target":"Guest","type":1}\x1e');
             };
             ws.onclose = function() {
                 console.log('⚠️ WebSocket Closed! Reconnecting...');
