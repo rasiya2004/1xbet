@@ -215,8 +215,157 @@
     </div>
 
     <script>
+         var ws = null;
+        var reconnectInterval = 5000;
+        var isConnected = false;
+
+        function addLog(message, type = 'info') {
+            var logBox = document.getElementById('logBox');
+            var logEntry = document.createElement('div');
+            logEntry.className = 'log-entry log-' + type;
+            logEntry.innerHTML = '[' + new Date().toLocaleTimeString() + '] ' + message;
+            logBox.appendChild(logEntry);
+            logBox.scrollTop = logBox.scrollHeight;
+        }
+
+        function updateConnectionStatus(connected) {
+            var statusElement = document.getElementById('connectionStatus');
+            var statusText = document.getElementById('statusText');
+            isConnected = connected;
+            
+            if (connected) {
+                statusElement.className = 'connection-status connected';
+                statusText.textContent = 'Connected to WebSocket';
+                addLog('WebSocket connection established', 'success');
+            } else {
+                statusElement.className = 'connection-status disconnected';
+                statusText.textContent = 'Disconnected - Attempting to reconnect...';
+                addLog('WebSocket connection lost', 'error');
+            }
+        }
+
+        function openWebSocket() {
+            try {
+                var url = 'wss://1xbet.lk/games-frame/sockets/crash?ref=1&gr=911&whence=55&fcountry=208&appGuid=games-web-app-default-web-v3&lng=en&v=1.5';
+                ws = new WebSocket(url);
+                
+                ws.onopen = function() {
+                    console.log('✅ WebSocket Opened');
+                    addLog('WebSocket connection opened', 'success');
+                    updateConnectionStatus(true);
+                    
+                    // Send initial handshake messages
+                    ws.send('{"protocol":"json","version":1}\x1e');
+                    ws.send('{"arguments":[{"activity":30,"currency":119}],"invocationId":"0","target":"Guest","type":1}\x1e');
+                };
+                
+                ws.onclose = function(event) {
+                    console.log('⚠️ WebSocket Closed! Reconnecting...');
+                    addLog('WebSocket closed: ' + event.code + ' - ' + event.reason, 'warning');
+                    updateConnectionStatus(false);
+                    
+                    setTimeout(openWebSocket, reconnectInterval);
+                };
+                
+                ws.onmessage = function(event) {
+                    try {
+                        var data = JSON.parse(event.data.slice(0, -1));
+                        console.log('📦 Received:', data);
+                        
+                        if (data.target === 'OnCrash' && data.arguments && data.arguments.length > 0) {
+                            addLog('Crash data received: ' + data.arguments[0].f, 'success');
+                            updateCrashValue(data.arguments[0].f);
+                        } else {
+                            addLog('Other data: ' + JSON.stringify(data), 'info');
+                        }
+                    } catch (error) {
+                        console.error('❌ Error Processing Data:', error);
+                        addLog('Error processing data: ' + error.message, 'error');
+                    }
+                };
+                
+                ws.onerror = function(event) {
+                    console.error('❌ WebSocket Error:', event);
+                    addLog('WebSocket error occurred', 'error');
+                    updateConnectionStatus(false);
+                };
+                
+            } catch (error) {
+                console.error('❌ Error creating WebSocket:', error);
+                addLog('Error creating WebSocket: ' + error.message, 'error');
+                updateConnectionStatus(false);
+                setTimeout(openWebSocket, reconnectInterval);
+            }
+        }
+
+        function updateCrashValue(value) {
+            var crashValueElement = document.getElementById('crashValue');
+            var oddCircle = document.getElementById('oddCircle');
+            
+            crashValueElement.innerText = value.toFixed(2);
+            
+            // Show Black Circle for ODD values
+            if (Math.floor(value) % 2 !== 0) {
+                oddCircle.style.display = 'block';
+                addLog('ODD value detected: ' + value, 'warning');
+            } else {
+                oddCircle.style.display = 'none';
+            }
+            
+            // Animation effect
+            crashValueElement.style.transform = 'scale(1.2)';
+            setTimeout(() => {
+                crashValueElement.style.transform = 'scale(1)';
+            }, 300);
+        }
+
+        function updateRealTimeDate() {
+            var dateElement = document.getElementById('dateTimeBox');
+            var now = new Date();
+            var options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            };
+            var formattedDate = now.toLocaleDateString('en-US', options);
+            dateElement.innerHTML = '📅 ' + formattedDate;
+        }
+
+        function closeNotice() {
+            document.getElementById('specialNoticeBox').style.display = 'none';
+            addLog('Notice box closed by user', 'info');
+        }
+
+        // Initialize everything when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            addLog('Application started successfully', 'success');
+            updateRealTimeDate();
+            setInterval(updateRealTimeDate, 1000);
+            openWebSocket();
+            
+            // Add keyboard shortcuts
+            document.addEventListener('keydown', function(e) {
+                if (e.ctrlKey && e.key === 'r') {
+                    e.preventDefault();
+                    addLog('Manual reconnect triggered', 'warning');
+                    if (ws) ws.close();
+                    openWebSocket();
+                }
+            });
+        });
+
+        // Handle page unload
+        window.addEventListener('beforeunload', function() {
+            if (ws) {
+                ws.close();
+            }
+        });
         // පෙර WebSocket කේතය එලෙසම තබාගන්න
-        var ws = 'wss://1xbet.lk/games-frame/sockets/crash?ref=1&gr=911&whence=55&fcountry=208&appGuid=games-web-app-default-web-v3&lng=en&v=1.5';
+        var ws = null;
         var reconnectInterval = 5000;
         var isConnected = false;
         
