@@ -1,433 +1,890 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crash Game Predictor</title>
+    <title>Advanced Thimble Predictor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        * {
             margin: 0;
-            padding: 20px;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0c0c2e, #1a1a4a, #2d2d7a);
             color: white;
             min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
         }
         
         .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            padding: 20px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            max-width: 900px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            border-radius: 25px;
+            padding: 30px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
         
         .header {
-            text-align: center;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 30px;
         }
         
-        .header h1 {
-            color: #00ff88;
-            font-size: 2.5em;
-            margin-bottom: 10px;
-            text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+        .back-btn button {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
         
-        .crash-display {
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 10px;
-            padding: 30px;
+        .back-btn button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.8rem;
             text-align: center;
-            margin: 20px 0;
-            border: 2px solid #00ff88;
-            position: relative;
+            margin-bottom: 10px;
+            text-shadow: 0 0 15px rgba(0, 200, 255, 0.8);
+            background: linear-gradient(to right, #00ccff, #00ffaa, #ff00cc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
         
-        .crash-value {
-            font-size: 2.5em;
+        .subtitle {
+            text-align: center;
+            color: #aaa;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .stat-card h3 {
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+            color: #00ccff;
+            font-family: 'Orbitron', sans-serif;
+        }
+        
+        .stat-value {
+            font-size: 1.8rem;
             font-weight: bold;
-            color: #00ff88;
-            text-shadow: 0 0 20px rgba(0, 255, 136, 0.7);
-            transition: all 0.3s ease;
+            font-family: 'Orbitron', sans-serif;
         }
         
-        .odd-circle {
-            width: 100px;
-            height: 100px;
-            background: black;
-            border-radius: 50%;
-            border: 3px solid #ff4444;
+        .accuracy-high {
+            color: #00ffaa;
+        }
+        
+        .accuracy-medium {
+            color: #ffcc00;
+        }
+        
+        .accuracy-low {
+            color: #ff6666;
+        }
+        
+        .game-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 40px 0;
+        }
+        
+        .cups-container {
+            display: flex;
+            justify-content: center;
+            gap: 50px;
+            margin: 30px 0;
+            perspective: 1000px;
+        }
+        
+        .cup-wrapper {
+            width: 160px;
+            height: 200px;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.5s;
+        }
+        
+        .cup-wrapper:hover {
+            transform: translateY(-15px) scale(1.05);
+        }
+        
+        .cup-img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 15px 20px rgba(0, 0, 0, 0.7));
+            transition: all 0.5s;
+        }
+        
+        .cup-wrapper.revealed .cup-img {
+            transform: translateY(-100px);
+        }
+        
+        .ball {
             position: absolute;
             top: 50%;
-            right: 30px;
-            transform: translateY(-50%);
-            display: none;
-            box-shadow: 0 0 20px rgba(255, 68, 68, 0.5);
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 3rem;
+            opacity: 0;
+            transition: opacity 0.3s, transform 0.5s;
+            text-shadow: 0 0 20px rgba(255, 255, 0, 0.8);
+            z-index: -1;
         }
         
-        .status-box {
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 10px;
-            padding: 15px;
-            margin: 10px 0;
-            border-left: 4px solid #007bff;
+        .cup-wrapper.revealed .ball {
+            opacity: 1;
+            transform: translate(-50%, -150%);
+            z-index: 1;
         }
         
-        .datetime-box {
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 10px;
-            padding: 15px;
-            margin: 10px 0;
-            border-left: 4px solid #ffcc00;
-            font-family: 'Courier New', monospace;
-        }
-        
-        .websocket-config {
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 10px;
-            padding: 15px;
-            margin: 10px 0;
-            border-left: 4px solid #9933ff;
-        }
-        
-        .websocket-config input {
+        .prediction-panel {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 25px;
+            border-radius: 20px;
             width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 5px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            background: rgba(0, 0, 0, 0.5);
-            color: white;
-            font-family: 'Courier New', monospace;
+            max-width: 600px;
+            text-align: center;
+            margin-top: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
         
-        .websocket-config button {
-            background: #00ff88;
-            color: #1a1a2e;
+        .prediction-text {
+            font-size: 1.6rem;
+            margin-bottom: 20px;
+            min-height: 50px;
+            font-family: 'Orbitron', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .prediction-high {
+            color: #00ffaa;
+        }
+        
+        .prediction-medium {
+            color: #ffcc00;
+        }
+        
+        .prediction-low {
+            color: #ff6666;
+        }
+        
+        .predict-btn {
+            background: linear-gradient(to right, #00ccff, #00ffaa);
             border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
+            color: #0c0c2e;
+            padding: 18px 50px;
+            font-size: 1.3rem;
+            border-radius: 50px;
             cursor: pointer;
             font-weight: bold;
-            margin-right: 10px;
-            transition: all 0.3s ease;
+            transition: all 0.3s;
+            box-shadow: 0 8px 20px rgba(0, 204, 255, 0.5);
+            font-family: 'Orbitron', sans-serif;
+            margin: 10px;
         }
         
-        .websocket-config button:hover {
-            background: #00cc6a;
-            box-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+        .predict-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(0, 204, 255, 0.7);
         }
         
-        .websocket-config button.secondary {
-            background: #ff4444;
+        .predict-btn:disabled {
+            background: #666;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .auto-predict-btn {
+            background: linear-gradient(to right, #ff00cc, #cc00ff);
+            border: none;
             color: white;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(255, 0, 204, 0.4);
+            font-family: 'Orbitron', sans-serif;
+            margin: 10px;
         }
         
-        .websocket-config button.secondary:hover {
-            background: #cc3636;
-            box-shadow: 0 0 10px rgba(255, 68, 68, 0.5);
+        .auto-predict-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255, 0, 204, 0.6);
         }
         
-        .notice-box {
-            background: rgba(255, 193, 7, 0.2);
-            border: 1px solid #ffc107;
-            border-radius: 10px;
-            padding: 15px;
+        .timer {
+            font-size: 1.3rem;
+            margin-top: 15px;
+            font-family: 'Orbitron', sans-serif;
+            color: #00ccff;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
             margin: 20px 0;
-            position: relative;
         }
         
-        .close-btn {
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            background: #ff4444;
+        .control-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             color: white;
-            border: none;
-            border-radius: 50%;
-            width: 25px;
-            height: 25px;
+            padding: 12px 25px;
+            border-radius: 50px;
             cursor: pointer;
-            font-weight: bold;
+            transition: all 0.3s;
+            font-size: 1rem;
         }
         
-        .connection-status {
-            display: inline-block;
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            margin-right: 10px;
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
         }
         
-        .connected {
-            background: #00ff88;
-            box-shadow: 0 0 10px #00ff88;
+        .analysis-panel {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 30px;
         }
         
-        .disconnected {
-            background: #ff4444;
-            box-shadow: 0 0 10px #ff4444;
-        }
-        
-        .log-box {
+        .history, .pattern-analysis {
             background: rgba(0, 0, 0, 0.3);
-            border-radius: 10px;
-            padding: 15px;
-            margin: 10px 0;
-            height: 150px;
+            padding: 25px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .history h3, .pattern-analysis h3 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #00ffaa;
+            font-family: 'Orbitron', sans-serif;
+        }
+        
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 200px;
             overflow-y: auto;
-            font-family: 'Courier New', monospace;
-            font-size: 0.9em;
+            padding-right: 10px;
         }
         
-        .log-entry {
-            margin: 5px 0;
-            padding: 5px;
-            border-radius: 3px;
+        .history-item {
+            padding: 12px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            font-family: 'Orbitron', sans-serif;
         }
         
-        .log-success { background: rgba(0, 255, 136, 0.1); }
-        .log-error { background: rgba(255, 68, 68, 0.1); }
-        .log-warning { background: rgba(255, 193, 7, 0.1); }
-        .log-info { background: rgba(0, 123, 255, 0.1); }
+        .history-win {
+            background: rgba(0, 255, 170, 0.15);
+            border: 1px solid #00ffaa;
+        }
+        
+        .history-lose {
+            background: rgba(255, 50, 50, 0.15);
+            border: 1px solid #ff3232;
+        }
+        
+        .pattern-analysis p {
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+        
+        .pattern-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .pattern-stat {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .pattern-stat h4 {
+            color: #00ccff;
+            margin-bottom: 8px;
+            font-family: 'Orbitron', sans-serif;
+        }
+        
+        .warning {
+            color: #ffcc00;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 25px;
+            padding: 20px;
+            border: 1px solid #ffcc00;
+            border-radius: 15px;
+            background: rgba(255, 204, 0, 0.1);
+        }
+        
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .analysis-panel {
+                grid-template-columns: 1fr;
+            }
+            
+            .cups-container {
+                gap: 20px;
+            }
+            
+            .cup-wrapper {
+                width: 120px;
+                height: 150px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+        }
+        
+        /* Animations */
+        @keyframes celebrate {
+            0% { transform: translate(-50%, -150%) scale(1); }
+            50% { transform: translate(-50%, -150%) scale(1.8); }
+            100% { transform: translate(-50%, -150%) scale(1); }
+        }
+        
+        .celebrate {
+            animation: celebrate 0.5s ease-in-out 3;
+        }
+        
+        @keyframes shuffle {
+            0% { transform: translateX(0) rotate(0deg); }
+            25% { transform: translateX(30px) rotate(5deg); }
+            50% { transform: translateX(-30px) rotate(-5deg); }
+            75% { transform: translateX(15px) rotate(3deg); }
+            100% { transform: translateX(0) rotate(0deg); }
+        }
+        
+        .shuffling {
+            animation: shuffle 0.6s ease-in-out;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>🎯 Crash Game Predictor</h1>
-            <p>Rasitha Lakshan All Right Reserved!!!</p>
-        </div>
-        
-        <div class="status-box">
-            <span class="connection-status" id="connectionStatus"></span>
-            <span id="statusText">Enter WebSocket URL and click Connect</span>
-        </div>
-        
-        <div class="datetime-box" id="dateTimeBox">
-            Loading date and time...
-        </div>
-        
-        <div class="websocket-config">
-            <h3>WebSocket Configuration</h3>
-            <input type="text" id="websocketUrl" placeholder="Enter WebSocket URL here...">
+            <div class="back-btn">
+                <button onclick="goBack()">← Back to Games</button>
+            </div>
             <div>
-                <button id="connectBtn" onclick="connectWebSocket()">Connect</button>
-                <button id="disconnectBtn" class="secondary" onclick="disconnectWebSocket()" disabled>Disconnect</button>
-                <button id="resetBtn" class="secondary" onclick="resetWebSocketUrl()">Reset to Default</button>
+                <h1>🧠 AI Thimble Predictor</h1>
+                <div class="subtitle">Advanced prediction algorithm with 85% accuracy</div>
+            </div>
+            <div style="width: 120px;"></div> <!-- Spacer for alignment -->
+        </div>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>PREDICTION ACCURACY</h3>
+                <div class="stat-value accuracy-high" id="accuracy">85%</div>
+            </div>
+            <div class="stat-card">
+                <h3>SUCCESS RATE</h3>
+                <div class="stat-value accuracy-medium" id="successRate">72%</div>
+            </div>
+            <div class="stat-card">
+                <h3>WIN STREAK</h3>
+                <div class="stat-value" id="winStreak">5</div>
+            </div>
+            <div class="stat-card">
+                <h3>TOTAL EARNINGS</h3>
+                <div class="stat-value" id="earnings">+$1,250</div>
             </div>
         </div>
         
-        <div class="crash-display">
+        <div class="game-area">
+            <div class="cups-container">
+                <div class="cup-wrapper" onclick="selectCup(0)">
+                    <img src="https://images2.imgbox.com/bf/da/1jqHnvyn_o.jpeg" class="cup-img" alt="Cup 1">
+                    <span class="ball">⚽</span>
+                    <div class="cup-probability" id="prob0">35%</div>
+                </div>
+                <div class="cup-wrapper" onclick="selectCup(1)">
+                    <img src="https://images2.imgbox.com/bf/da/1jqHnvyn_o.jpeg" class="cup-img" alt="Cup 2">
+                    <span class="ball">⚽</span>
+                    <div class="cup-probability" id="prob1">45%</div>
+                </div>
+                <div class="cup-wrapper" onclick="selectCup(2)">
+                    <img src="https://images2.imgbox.com/bf/da/1jqHnvyn_o.jpeg" class="cup-img" alt="Cup 3">
+                    <span class="ball">⚽</span>
+                    <div class="cup-probability" id="prob2">20%</div>
+                </div>
+            </div>
             
-            <div class="crash-value" id="crashValue">0.00</div>
+            <div class="prediction-panel">
+                <div class="prediction-text" id="predictionText">
+                    <span>🤖 AI Prediction: </span>
+                    <span id="aiPrediction">Analyzing patterns...</span>
+                </div>
+                
+                <div class="controls">
+                    <button class="predict-btn" id="predictBtn" onclick="analyzeAndPredict()">
+                        <span>🧠 ANALYZE & PREDICT</span>
+                    </button>
+                    <button class="auto-predict-btn" id="autoPredictBtn" onclick="toggleAutoPredict()">
+                        <span>⚡ AUTO-PREDICT: OFF</span>
+                    </button>
+                </div>
+                
+                <div class="timer" id="timer">
+                    Next analysis in: <span id="countdown">3</span>s
+                </div>
+            </div>
         </div>
         
-        <div class="notice-box" id="specialNoticeBox">
-            <button class="close-btn" onclick="closeNotice()">×</button>
-            <h3>⚠️ Important Notice</h3>
-            <p> Gambling can be addictive. Please play responsibly.</p>
+        <div class="analysis-panel">
+            <div class="history">
+                <h3>PREDICTION HISTORY</h3>
+                <div class="history-list" id="historyList">
+                    <!-- History items will be added here -->
+                </div>
+            </div>
+            
+            <div class="pattern-analysis">
+                <h3>PATTERN ANALYSIS</h3>
+                <p id="patternText">Initializing pattern recognition algorithm... Analyzing previous rounds for predictive patterns.</p>
+                
+                <div class="pattern-stats">
+                    <div class="pattern-stat">
+                        <h4>PATTERN STRENGTH</h4>
+                        <div class="stat-value">87%</div>
+                    </div>
+                    <div class="pattern-stat">
+                        <h4>CONFIDENCE LEVEL</h4>
+                        <div class="stat-value">92%</div>
+                    </div>
+                </div>
+            </div>
         </div>
         
-        <div class="log-box" id="logBox">
-            <div class="log-entry log-info">System initialized. Enter WebSocket URL and click Connect to start.</div>
+        <div class="warning">
+            ⚠️ IMPORTANT: This is a simulation for entertainment purposes only. 
+            No actual prediction of real games is possible. Gambling involves risk.
         </div>
     </div>
 
     <script>
-        var ws = null;
-        var reconnectInterval = 5000;
-        var isConnected = false;
-        var reconnectAttempts = 0;
-        var maxReconnectAttempts = 5;
-        var defaultWebSocketUrl = 'wss://melbet-srilanka.com/games-frame/sockets/crash?ref=8&gr=1941&whence=55&fcountry=208&appGuid=games-web-app-default-web-v3&lng=en&v=1.5';
-
-        // Initialize the default WebSocket URL
-        document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('websocketUrl').value = defaultWebSocketUrl;
-            updateRealTimeDate();
-            setInterval(updateRealTimeDate, 1000);
+        // Advanced Game State
+        const gameState = {
+            balance: 1000,
+            currentBet: 50,
+            winStreak: 5,
+            totalEarnings: 1250,
+            accuracy: 85,
+            successRate: 72,
+            ballPosition: -1,
+            isAnalyzing: false,
+            canPredict: true,
+            autoPredict: false,
+            predictionHistory: [],
+            patternData: [],
+            analysisCount: 0
+        };
+        
+        // DOM elements
+        const cupWrappers = document.querySelectorAll('.cup-wrapper');
+        const accuracyEl = document.getElementById('accuracy');
+        const successRateEl = document.getElementById('successRate');
+        const winStreakEl = document.getElementById('winStreak');
+        const earningsEl = document.getElementById('earnings');
+        const predictionText = document.getElementById('predictionText');
+        const aiPredictionEl = document.getElementById('aiPrediction');
+        const predictBtn = document.getElementById('predictBtn');
+        const autoPredictBtn = document.getElementById('autoPredictBtn');
+        const countdownEl = document.getElementById('countdown');
+        const timerEl = document.getElementById('timer');
+        const historyList = document.getElementById('historyList');
+        const patternText = document.getElementById('patternText');
+        const probElements = [
+            document.getElementById('prob0'),
+            document.getElementById('prob1'),
+            document.getElementById('prob2')
+        ];
+        
+        // Initialize the game
+        initGame();
+        
+        // Game functions
+        function initGame() {
+            updateDisplay();
+            generateInitialHistory();
+            updatePatternAnalysis();
+            startAnalysisCycle();
+        }
+        
+        function goBack() {
+            alert("Returning to game selection...");
+            // In a real app, this would navigate to another screen
+        }
+        
+        function analyzeAndPredict() {
+            if (!gameState.canPredict || gameState.isAnalyzing) return;
             
-            // Add keyboard shortcuts
-            document.addEventListener('keydown', function(e) {
-                if (e.ctrlKey && e.key === 'r') {
-                    e.preventDefault();
-                    addLog('Manual reconnect triggered', 'warning');
-                    if (ws) ws.close();
-                    connectWebSocket();
+            gameState.isAnalyzing = true;
+            gameState.canPredict = false;
+            predictBtn.disabled = true;
+            
+            // Show analyzing state
+            predictionText.className = 'prediction-text';
+            aiPredictionEl.textContent = "Analyzing patterns...";
+            
+            // Simulate AI analysis
+            simulateAnalysis();
+        }
+        
+        function simulateAnalysis() {
+            // Phase 1: Initial analysis
+            setTimeout(() => {
+                aiPredictionEl.textContent = "Scanning cup movements...";
+            }, 800);
+            
+            // Phase 2: Pattern recognition
+            setTimeout(() => {
+                aiPredictionEl.textContent = "Identifying sequences...";
+            }, 1600);
+            
+            // Phase 3: Final prediction
+            setTimeout(() => {
+                performPrediction();
+            }, 2400);
+        }
+        
+        function performPrediction() {
+            gameState.isAnalyzing = false;
+            
+            // Generate probabilities
+            const probabilities = generateProbabilities();
+            updateProbabilities(probabilities);
+            
+            // Determine AI prediction (highest probability)
+            const aiPrediction = probabilities.indexOf(Math.max(...probabilities));
+            
+            // Set actual ball position (random, but weighted)
+            gameState.ballPosition = weightedRandom(probabilities);
+            
+            // Display AI prediction
+            aiPredictionEl.textContent = `Cup ${aiPrediction + 1} (${probabilities[aiPrediction]}% confidence)`;
+            
+            // Check if AI is correct
+            const isCorrect = (aiPrediction === gameState.ballPosition);
+            
+            // Update game state based on result
+            updateGameState(isCorrect);
+            
+            // Reveal results after a delay
+            setTimeout(() => {
+                revealAllCups();
+                addToHistory(isCorrect, probabilities[aiPrediction]);
+                updatePatternAnalysis();
+                
+                // Start cooldown
+                startCooldown(5);
+            }, 1000);
+        }
+        
+        function generateProbabilities() {
+            // Generate random probabilities that sum to 100
+            const p1 = Math.floor(Math.random() * 40) + 20; // 20-60%
+            const p2 = Math.floor(Math.random() * (100 - p1 - 10)) + 10; // 10-80%
+            const p3 = 100 - p1 - p2; // Remainder
+            
+            return [p1, p2, p3];
+        }
+        
+        function weightedRandom(probabilities) {
+            const rand = Math.random() * 100;
+            let sum = 0;
+            
+            for (let i = 0; i < probabilities.length; i++) {
+                sum += probabilities[i];
+                if (rand <= sum) return i;
+            }
+            
+            return probabilities.length - 1;
+        }
+        
+        function updateProbabilities(probabilities) {
+            probElements.forEach((el, index) => {
+                el.textContent = `${probabilities[index]}%`;
+                
+                // Color code based on probability
+                if (probabilities[index] >= 40) {
+                    el.className = 'accuracy-high';
+                } else if (probabilities[index] >= 25) {
+                    el.className = 'accuracy-medium';
+                } else {
+                    el.className = 'accuracy-low';
                 }
             });
-        });
-
-        function addLog(message, type = 'info') {
-            var logBox = document.getElementById('logBox');
-            var logEntry = document.createElement('div');
-            logEntry.className = 'log-entry log-' + type;
-            logEntry.innerHTML = '[' + new Date().toLocaleTimeString() + '] ' + message;
-            logBox.appendChild(logEntry);
-            logBox.scrollTop = logBox.scrollHeight;
         }
-
-        function updateConnectionStatus(connected) {
-            var statusElement = document.getElementById('connectionStatus');
-            var statusText = document.getElementById('statusText');
-            var connectBtn = document.getElementById('connectBtn');
-            var disconnectBtn = document.getElementById('disconnectBtn');
+        
+        function selectCup(index) {
+            if (gameState.isAnalyzing || gameState.canPredict) return;
             
-            isConnected = connected;
+            // Highlight selected cup
+            cupWrappers.forEach(wrapper => wrapper.classList.remove('selected'));
+            cupWrappers[index].classList.add('selected');
             
-            if (connected) {
-                statusElement.className = 'connection-status connected';
-                statusText.textContent = 'Connected to WebSocket';
-                connectBtn.disabled = true;
-                disconnectBtn.disabled = false;
-                addLog('WebSocket connection established', 'success');
-                reconnectAttempts = 0; // Reset reconnect attempts on successful connection
+            // Check if user follows AI recommendation
+            const probabilities = probElements.map(el => parseInt(el.textContent));
+            const aiPrediction = probabilities.indexOf(Math.max(...probabilities));
+            const userFollowedAI = (index === aiPrediction);
+            
+            // Show result
+            if (userFollowedAI) {
+                predictionText.innerHTML = `<span class="prediction-high">✅ Smart choice! Following AI recommendation</span>`;
             } else {
-                statusElement.className = 'connection-status disconnected';
-                statusText.textContent = 'Disconnected';
-                connectBtn.disabled = false;
-                disconnectBtn.disabled = true;
-                addLog('WebSocket connection lost', 'error');
+                predictionText.innerHTML = `<span class="prediction-low">⚠️ Not following AI suggestion (Cup ${aiPrediction + 1})</span>`;
             }
         }
-
-        function connectWebSocket() {
-            var url = document.getElementById('websocketUrl').value.trim();
+        
+        function revealAllCups() {
+            cupWrappers.forEach(wrapper => {
+                wrapper.classList.add('revealed');
+            });
             
-            if (!url) {
-                addLog('Please enter a valid WebSocket URL', 'error');
-                return;
-            }
+            // Highlight correct cup
+            cupWrappers[gameState.ballPosition].querySelector('.ball').classList.add('celebrate');
             
-            // Validate URL format
-            if (!url.startsWith('ws://') && !url.startsWith('wss://')) {
-                addLog('Invalid WebSocket URL. Must start with ws:// or wss://', 'error');
-                return;
-            }
+            // Update prediction text with result
+            const probabilities = probElements.map(el => parseInt(el.textContent));
+            const aiPrediction = probabilities.indexOf(Math.max(...probabilities));
+            const isCorrect = (aiPrediction === gameState.ballPosition);
             
-            disconnectWebSocket(); // Close any existing connection
-            
-            try {
-                ws = new WebSocket(url);
-                
-                ws.onopen = function() {
-                    console.log('✅ WebSocket Opened');
-                    addLog('WebSocket connection opened to: ' + url, 'success');
-                    updateConnectionStatus(true);
-                    
-                    // Send initial handshake messages
-                    ws.send('{"protocol":"json","version":1}\x1e');
-                    ws.send('{"arguments":[{"activity":30,"currency":119}],"invocationId":"0","target":"Guest","type":1}\x1e');
-                };
-                
-                ws.onclose = function(event) {
-                    console.log('⚠️ WebSocket Closed!');
-                    addLog('WebSocket closed: ' + event.code + ' - ' + event.reason, 'warning');
-                    updateConnectionStatus(false);
-                    
-                    // Auto-reconnect if it was an unexpected closure
-                    if (event.code !== 1000 && reconnectAttempts < maxReconnectAttempts) {
-                        reconnectAttempts++;
-                        addLog('Attempting to reconnect... (' + reconnectAttempts + '/' + maxReconnectAttempts + ')', 'warning');
-                        setTimeout(connectWebSocket, reconnectInterval);
-                    }
-                };
-                
-                ws.onmessage = function(event) {
-                    try {
-                        var data = JSON.parse(event.data.slice(0, -1));
-                        console.log('📦 Received:', data);
-                        
-                        if (data.target === 'OnCrash' && data.arguments && data.arguments.length > 0) {
-                            addLog('Crash data received: ' + data.arguments[0].f, 'success');
-                            updateCrashValue(data.arguments[0].f);
-                        } else {
-                            addLog('Other data: ' + JSON.stringify(data), 'info');
-                        }
-                    } catch (error) {
-                        console.error('❌ Error Processing Data:', error);
-                        addLog('Error processing data: ' + error.message, 'error');
-                    }
-                };
-                
-                ws.onerror = function(event) {
-                    console.error('❌ WebSocket Error:', event);
-                    addLog('WebSocket error occurred', 'error');
-                    updateConnectionStatus(false);
-                };
-                
-            } catch (error) {
-                console.error('❌ Error creating WebSocket:', error);
-                addLog('Error creating WebSocket: ' + error.message, 'error');
-                updateConnectionStatus(false);
-            }
-        }
-
-        function disconnectWebSocket() {
-            if (ws) {
-                ws.close(1000, "User disconnected");
-                ws = null;
-            }
-            updateConnectionStatus(false);
-            addLog('WebSocket disconnected by user', 'info');
-        }
-
-        function resetWebSocketUrl() {
-            document.getElementById('websocketUrl').value = defaultWebSocketUrl;
-            addLog('WebSocket URL reset to default', 'info');
-        }
-
-        function updateCrashValue(value) {
-            var crashValueElement = document.getElementById('crashValue');
-            var oddCircle = document.getElementById('oddCircle');
-            
-            crashValueElement.innerText = value.toFixed(2);
-            
-            // Show Black Circle for ODD values
-            if (Math.floor(value) % 2 !== 0) {
-                oddCircle.style.display = 'block';
-                addLog('ODD value detected: ' + value, 'warning');
+            if (isCorrect) {
+                predictionText.innerHTML = `<span class="prediction-high">🎉 AI PREDICTION CORRECT! Cup ${gameState.ballPosition + 1} had the ball</span>`;
             } else {
-                oddCircle.style.display = 'none';
+                predictionText.innerHTML = `<span class="prediction-low">❌ AI PREDICTION WRONG! Ball was under Cup ${gameState.ballPosition + 1}</span>`;
+            }
+        }
+        
+        function updateGameState(isCorrect) {
+            if (isCorrect) {
+                gameState.winStreak++;
+                gameState.totalEarnings += gameState.currentBet;
+                gameState.accuracy = Math.min(95, gameState.accuracy + 1);
+                gameState.successRate = Math.min(90, gameState.successRate + 2);
+            } else {
+                gameState.winStreak = 0;
+                gameState.totalEarnings -= gameState.currentBet;
+                gameState.accuracy = Math.max(65, gameState.accuracy - 2);
+                gameState.successRate = Math.max(60, gameState.successRate - 3);
             }
             
-            // Animation effect
-            crashValueElement.style.transform = 'scale(1.2)';
-            setTimeout(() => {
-                crashValueElement.style.transform = 'scale(1)';
-            }, 300);
+            updateDisplay();
         }
-
-        function updateRealTimeDate() {
-            var dateElement = document.getElementById('dateTimeBox');
-            var now = new Date();
-            var options = { 
-                weekday: 'long', 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit'
-            };
-            var formattedDate = now.toLocaleDateString('en-US', options);
-            dateElement.innerHTML = '📅 ' + formattedDate;
-        }
-
-        function closeNotice() {
-            document.getElementById('specialNoticeBox').style.display = 'none';
-            addLog('Notice box closed by user', 'info');
-        }
-
-        // Handle page unload
-        window.addEventListener('beforeunload', function() {
-            if (ws) {
-                ws.close();
+        
+        function addToHistory(isCorrect, confidence) {
+            const historyItem = document.createElement('div');
+            historyItem.className = `history-item ${isCorrect ? 'history-win' : 'history-lose'}`;
+            
+            const result = isCorrect ? '✅ CORRECT' : '❌ WRONG';
+            historyItem.innerHTML = `
+                <span>Prediction #${gameState.analysisCount + 1}</span>
+                <span>${result} (${confidence}%)</span>
+            `;
+            
+            historyList.insertBefore(historyItem, historyList.firstChild);
+            
+            // Keep only last 8 history items
+            if (historyList.children.length > 8) {
+                historyList.removeChild(historyList.lastChild);
             }
-        });
+            
+            // Add to game state history
+            gameState.predictionHistory.unshift({
+                correct: isCorrect,
+                confidence: confidence,
+                timestamp: new Date()
+            });
+            
+            gameState.analysisCount++;
+        }
+        
+        function updatePatternAnalysis() {
+            const recentCorrect = gameState.predictionHistory
+                .filter(p => p.correct)
+                .length;
+            
+            const totalRecent = Math.min(10, gameState.predictionHistory.length);
+            const recentAccuracy = totalRecent > 0 ? Math.round((recentCorrect / totalRecent) * 100) : 0;
+            
+            const patterns = [
+                "Detecting strong sequential pattern in cup selection",
+                "Algorithm identified bias toward middle cup",
+                "Pattern analysis shows alternating sequence",
+                "Random distribution detected, no clear pattern",
+                "Strong correlation with previous 3 rounds"
+            ];
+            
+            patternText.textContent = patterns[Math.floor(Math.random() * patterns.length)];
+        }
+        
+        function generateInitialHistory() {
+            for (let i = 0; i < 5; i++) {
+                const isCorrect = Math.random() > 0.3;
+                const confidence = Math.floor(Math.random() * 30) + 65;
+                
+                const historyItem = document.createElement('div');
+                historyItem.className = `history-item ${isCorrect ? 'history-win' : 'history-lose'}`;
+                historyItem.innerHTML = `
+                    <span>Prediction #${i + 1}</span>
+                    <span>${isCorrect ? '✅ CORRECT' : '❌ WRONG'} (${confidence}%)</span>
+                `;
+                
+                historyList.appendChild(historyItem);
+                
+                gameState.predictionHistory.push({
+                    correct: isCorrect,
+                    confidence: confidence,
+                    timestamp: new Date(Date.now() - (i * 60000))
+                });
+            }
+        }
+        
+        function startCooldown(seconds) {
+            let timeLeft = seconds;
+            timerEl.style.display = 'block';
+            
+            const countdownInterval = setInterval(() => {
+                countdownEl.textContent = timeLeft;
+                timeLeft--;
+                
+                if (timeLeft < 0) {
+                    clearInterval(countdownInterval);
+                    gameState.canPredict = true;
+                    predictBtn.disabled = false;
+                    
+                    // Reset cups
+                    cupWrappers.forEach(wrapper => {
+                        wrapper.classList.remove('revealed', 'selected');
+                        wrapper.querySelector('.ball').classList.remove('celebrate');
+                    });
+                    
+                    // Reset prediction text
+                    predictionText.className = 'prediction-text';
+                    aiPredictionEl.textContent = "Ready for analysis...";
+                    
+                    // Clear probabilities
+                    probElements.forEach(el => {
+                        el.textContent = '0%';
+                        el.className = '';
+                    });
+                    
+                    // If auto-predict is enabled, trigger next prediction
+                    if (gameState.autoPredict) {
+                        setTimeout(analyzeAndPredict, 1000);
+                    }
+                }
+            }, 1000);
+        }
+        
+        function startAnalysisCycle() {
+            // Simulate periodic analysis updates
+            setInterval(() => {
+                if (!gameState.isAnalyzing && gameState.canPredict) {
+                    updatePatternAnalysis();
+                }
+            }, 5000);
+        }
+        
+        function toggleAutoPredict() {
+            gameState.autoPredict = !gameState.autoPredict;
+            autoPredictBtn.innerHTML = `<span>⚡ AUTO-PREDICT: ${gameState.autoPredict ? 'ON' : 'OFF'}</span>`;
+            
+            if (gameState.autoPredict && gameState.canPredict && !gameState.isAnalyzing) {
+                analyzeAndPredict();
+            }
+        }
+        
+        function updateDisplay() {
+            accuracyEl.textContent = `${gameState.accuracy}%`;
+            successRateEl.textContent = `${gameState.successRate}%`;
+            winStreakEl.textContent = gameState.winStreak;
+            earningsEl.textContent = `+$${gameState.totalEarnings}`;
+            
+            // Update accuracy color
+            accuracyEl.className = `stat-value ${
+                gameState.accuracy >= 80 ? 'accuracy-high' : 
+                gameState.accuracy >= 70 ? 'accuracy-medium' : 'accuracy-low'
+            }`;
+            
+            // Update success rate color
+            successRateEl.className = `stat-value ${
+                gameState.successRate >= 75 ? 'accuracy-high' : 
+                gameState.successRate >= 65 ? 'accuracy-medium' : 'accuracy-low'
+            }`;
+        }
+        
+        // Initialize cooldown timer as visible but with 0
+        timerEl.style.display = 'block';
     </script>
 </body>
 </html>
